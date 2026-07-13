@@ -1,12 +1,22 @@
+import { useEffect } from 'react'
 import { propertyTypes, company } from '../data.js'
 import { dealLabel, priceLabel } from '../lib/format.js'
 
 export default function ListingModal({ item, onClose }) {
+  useEffect(() => {
+    if (!item) return
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [item, onClose])
+
   if (!item) return null
   const typeLabel = propertyTypes.find((t) => t.key === item.typeKey)?.label ?? ''
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
         <button className="modal-x" onClick={onClose} aria-label="닫기">×</button>
         <span className="tag">{dealLabel(item.dealKey)} · {typeLabel}</span>
         <h3>{item.title}</h3>

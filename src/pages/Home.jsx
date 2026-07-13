@@ -4,6 +4,7 @@ import SectionTitle from '../components/SectionTitle.jsx'
 import PropertyTypeCards from '../components/PropertyTypeCards.jsx'
 import StepGuide from '../components/StepGuide.jsx'
 import CtaBanner from '../components/CtaBanner.jsx'
+import { dealLabel } from '../lib/format.js'
 
 export default function Home() {
   const featured = listings.slice(0, 4)
@@ -43,7 +44,7 @@ export default function Home() {
               <div key={l.id} className="feat-card">
                 <div className="feat-thumb">{l.title.slice(0, 1)}</div>
                 <div className="feat-body">
-                  <span className="tag">{l.dealKey === 'sale' ? '매매' : l.dealKey === 'jeonse' ? '전세' : '월세'}</span>
+                  <span className="tag">{dealLabel(l.dealKey)}</span>
                   <strong>{l.title}</strong>
                   <p>{l.location} · {l.area}</p>
                 </div>

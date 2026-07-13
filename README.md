@@ -14,8 +14,8 @@ npm run build    # dist/
 - `src/pages/` — 홈/회사소개/매물정보/계약절차안내/부동산정책/문의
 - `src/components/` — 공통 컴포넌트
 
-## 교체 대기(더미) 값 — `src/data.js`의 `company`
-- 대표자(ceo): `(변경예정)` 표시된 값
+## 교체 대기(더미) 값
+- 회사 정보(`src/data.js`의 `company`)는 모두 확정된 값입니다.
 - 매물(listings): 데모 데이터 → 실제 매물로 교체
 
 ## 참고

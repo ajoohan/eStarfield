@@ -30,7 +30,7 @@ export default function Header() {
           ))}
         </nav>
         <a className="hdr-cta" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 {company.phone}</a>
-        <button className="hdr-toggle" aria-label="메뉴" onClick={() => setOpen(!open)}>☰</button>
+        <button className="hdr-toggle" aria-label="메뉴" aria-expanded={open} onClick={() => setOpen(!open)}>☰</button>
       </div>
     </header>
   )
