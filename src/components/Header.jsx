@@ -4,6 +4,7 @@ import { company } from '../data.js'
 
 const menu = [
   { to: '/about', label: '회사소개' },
+  { to: '/complexes', label: '주변단지소개' },
   { to: '/listings', label: '매물정보' },
   { to: '/process', label: '계약절차안내' },
   { to: '/policy', label: '부동산정책' },
