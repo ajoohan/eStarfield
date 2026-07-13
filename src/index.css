@@ -23,3 +23,32 @@ a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 .container { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
 .page { max-width: var(--maxw); margin: 0 auto; padding: 48px 20px 80px; }
+
+/* Header */
+.hdr { position: sticky; top: 0; z-index: 50; background: var(--white); border-bottom: 1px solid #eef0f3; }
+.hdr-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.logo { display: flex; align-items: center; gap: 8px; }
+.logo-star { color: var(--gold); font-size: 22px; }
+.logo-text { font-weight: 800; color: var(--navy); font-size: 20px; line-height: 1; display: flex; flex-direction: column; }
+.logo-text small { font-weight: 500; color: var(--muted); font-size: 11px; margin-top: 2px; }
+.hdr-nav { display: flex; align-items: center; gap: 22px; }
+.hdr-nav a { font-weight: 600; color: var(--text); font-size: 15px; }
+.hdr-nav a.active { color: var(--navy); }
+.hdr-nav a:hover { color: var(--gold); }
+.hdr-cta { background: var(--navy); color: var(--white) !important; padding: 9px 16px; border-radius: 999px; font-size: 14px; }
+.hdr-cta:hover { background: var(--navy-deep); }
+.hdr-toggle { display: none; background: none; border: none; font-size: 24px; color: var(--navy); cursor: pointer; }
+@media (max-width: 860px) {
+  .hdr-toggle { display: block; }
+  .hdr-nav { position: absolute; top: 68px; left: 0; right: 0; background: var(--white); flex-direction: column; align-items: flex-start; gap: 0; padding: 8px 20px; border-bottom: 1px solid #eef0f3; display: none; }
+  .hdr-nav.is-open { display: flex; }
+  .hdr-nav a { width: 100%; padding: 12px 0; border-bottom: 1px solid #f2f3f5; }
+  .hdr-cta { margin: 10px 0; }
+}
+/* Footer */
+.ftr { background: var(--navy-deep); color: #c7d2e0; margin-top: 60px; }
+.ftr-inner { padding: 40px 20px; display: grid; gap: 14px; }
+.ftr-brand strong { color: var(--white); font-size: 18px; }
+.ftr-brand p { margin: 4px 0 0; color: var(--gold-light); }
+.ftr-info p { margin: 2px 0; font-size: 14px; }
+.ftr-copy { border-top: 1px solid rgba(255,255,255,.1); padding-top: 14px; font-size: 13px; color: #8ea0b5; }
