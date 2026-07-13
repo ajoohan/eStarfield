@@ -141,3 +141,36 @@ img { max-width: 100%; display: block; }
 .modal-desc { color: var(--text); margin: 0 0 18px; }
 @media (max-width: 860px) { .listing-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 520px) { .listing-grid { grid-template-columns: 1fr; } }
+
+/* About */
+.about-greet { background: #fff; border: 1px solid #e9ecf1; border-radius: var(--radius); padding: 28px; margin-bottom: 22px; }
+.about-greet p { margin: 0 0 12px; }
+.about-greet b { color: var(--navy); }
+.about-info { margin-bottom: 22px; }
+.about-info h3, .policy-h, .proc-note h3 { color: var(--navy); font-size: 20px; margin: 8px 0 14px; }
+.about-info ul { list-style: none; padding: 0; margin: 0; background: #fff; border: 1px solid #e9ecf1; border-radius: var(--radius); }
+.about-info li { display: flex; padding: 12px 18px; border-bottom: 1px solid #eef0f3; font-size: 15px; }
+.about-info li:last-child { border-bottom: none; }
+.about-info li span { width: 90px; color: var(--muted); flex-shrink: 0; }
+.about-points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+.pt { background: #fff; border: 1px solid #e9ecf1; border-radius: var(--radius); padding: 22px; }
+.pt strong { color: var(--navy); font-size: 17px; display: block; margin-bottom: 6px; }
+.pt p { margin: 0; color: var(--muted); }
+/* Process */
+.proc-note { background: #fff; border: 1px solid #e9ecf1; border-radius: var(--radius); padding: 26px; margin-top: 26px; }
+.proc-note ul { margin: 0 0 14px; padding-left: 18px; }
+.proc-note li { margin: 6px 0; }
+.proc-caution { color: var(--muted); font-size: 14px; margin: 0; }
+/* Policy */
+.fee-wrap { overflow-x: auto; }
+.fee-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e9ecf1; border-radius: var(--radius); overflow: hidden; }
+.fee-table th, .fee-table td { padding: 13px 14px; text-align: left; border-bottom: 1px solid #eef0f3; font-size: 14px; }
+.fee-table th { background: var(--navy); color: #fff; font-weight: 700; }
+.fee-rate { color: var(--gold); font-weight: 800; white-space: nowrap; }
+.policy-caution { color: var(--muted); font-size: 14px; margin: 12px 0 34px; }
+.faq { display: grid; gap: 10px; }
+.faq-item { background: #fff; border: 1px solid #e9ecf1; border-radius: var(--radius); overflow: hidden; }
+.faq-q { width: 100%; text-align: left; background: none; border: none; padding: 16px 18px; font-size: 16px; font-weight: 600; color: var(--navy); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.faq-q span { color: var(--gold); font-size: 22px; }
+.faq-a { margin: 0; padding: 0 18px 18px; color: var(--text); }
+@media (max-width: 860px) { .about-points { grid-template-columns: 1fr; } }
