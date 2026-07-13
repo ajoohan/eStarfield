@@ -71,6 +71,7 @@ export default function InquiriesManager() {
 
   async function handleDelete(id) {
     if (!confirm('이 문의를 삭제하시겠습니까?')) return
+    setBusyId(id)
     setError('')
     try {
       const { error: deleteError } = await supabase.from('inquiries').delete().eq('id', id)
@@ -81,6 +82,8 @@ export default function InquiriesManager() {
       await loadInquiries()
     } catch (err) {
       setError(err?.message || '삭제 중 오류가 발생했습니다.')
+    } finally {
+      setBusyId(null)
     }
   }
 
@@ -132,7 +135,12 @@ export default function InquiriesManager() {
                     >
                       {row.handled ? '처리취소' : '처리완료'}
                     </button>
-                    <button type="button" className="btn btn-danger" onClick={() => handleDelete(row.id)}>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(row.id)}
+                      disabled={busyId === row.id}
+                    >
                       삭제
                     </button>
                   </td>

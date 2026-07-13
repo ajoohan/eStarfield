@@ -43,7 +43,14 @@ export default function Admin() {
   async function handleSignOut() {
     setSigningOut(true)
     try {
-      await supabase.auth.signOut()
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.error('[admin] 로그아웃 중 오류:', error.message || error)
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('[admin] 로그아웃 중 오류:', e?.message || e)
     } finally {
       setSigningOut(false)
     }
