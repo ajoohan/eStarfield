@@ -19,7 +19,6 @@ export default function Header() {
           <span className="logo-star">★</span>
           <span className="logo-text">e스타필드<small>공인중개사사무소</small></span>
         </Link>
-        <button className="hdr-toggle" aria-label="메뉴" onClick={() => setOpen(!open)}>☰</button>
         <nav className={`hdr-nav ${open ? 'is-open' : ''}`}>
           {menu.map((m) => (
             <NavLink key={m.to} to={m.to} onClick={() => setOpen(false)}
@@ -27,8 +26,9 @@ export default function Header() {
               {m.label}
             </NavLink>
           ))}
-          <a className="hdr-cta" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 {company.phone}</a>
         </nav>
+        <a className="hdr-cta" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 {company.phone}</a>
+        <button className="hdr-toggle" aria-label="메뉴" onClick={() => setOpen(!open)}>☰</button>
       </div>
     </header>
   )

@@ -26,24 +26,24 @@ img { max-width: 100%; display: block; }
 
 /* Header */
 .hdr { position: sticky; top: 0; z-index: 50; background: var(--white); border-bottom: 1px solid #eef0f3; }
-.hdr-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.hdr-inner { display: flex; align-items: center; gap: 16px; height: 68px; }
 .logo { display: flex; align-items: center; gap: 8px; }
 .logo-star { color: var(--gold); font-size: 22px; }
 .logo-text { font-weight: 800; color: var(--navy); font-size: 20px; line-height: 1; display: flex; flex-direction: column; }
 .logo-text small { font-weight: 500; color: var(--muted); font-size: 11px; margin-top: 2px; }
-.hdr-nav { display: flex; align-items: center; gap: 22px; }
+.hdr-nav { display: flex; align-items: center; gap: 22px; margin-left: auto; }
 .hdr-nav a { font-weight: 600; color: var(--text); font-size: 15px; }
 .hdr-nav a.active { color: var(--navy); }
 .hdr-nav a:hover { color: var(--gold); }
-.hdr-cta { background: var(--navy); color: var(--white) !important; padding: 9px 16px; border-radius: 999px; font-size: 14px; }
+.hdr-cta { background: var(--navy); color: var(--white) !important; padding: 9px 16px; border-radius: 999px; font-size: 14px; white-space: nowrap; }
 .hdr-cta:hover { background: var(--navy-deep); }
 .hdr-toggle { display: none; background: none; border: none; font-size: 24px; color: var(--navy); cursor: pointer; }
 @media (max-width: 860px) {
   .hdr-toggle { display: block; }
-  .hdr-nav { position: absolute; top: 68px; left: 0; right: 0; background: var(--white); flex-direction: column; align-items: flex-start; gap: 0; padding: 8px 20px; border-bottom: 1px solid #eef0f3; display: none; }
+  .hdr-cta { margin-left: auto; }
+  .hdr-nav { position: absolute; top: 68px; left: 0; right: 0; background: var(--white); flex-direction: column; align-items: flex-start; gap: 0; margin-left: 0; padding: 8px 20px; border-bottom: 1px solid #eef0f3; display: none; }
   .hdr-nav.is-open { display: flex; }
   .hdr-nav a { width: 100%; padding: 12px 0; border-bottom: 1px solid #f2f3f5; }
-  .hdr-cta { margin: 10px 0; }
 }
 /* Footer */
 .ftr { background: var(--navy-deep); color: #c7d2e0; margin-top: 60px; }
