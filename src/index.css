@@ -3,6 +3,7 @@
   --navy-deep: #0A1E38;
   --gold: #C9A24B;
   --gold-light: #E4C877;
+  --brand-red: #CE4B3C;
   --bg: #F7F8FA;
   --text: #1B2430;
   --muted: #6B7684;
@@ -27,10 +28,12 @@ img { max-width: 100%; display: block; }
 /* Header */
 .hdr { position: sticky; top: 0; z-index: 50; background: var(--white); border-bottom: 1px solid #eef0f3; }
 .hdr-inner { display: flex; align-items: center; gap: 16px; height: 68px; }
-.logo { display: flex; align-items: center; gap: 8px; }
-.logo-star { color: var(--gold); font-size: 22px; }
-.logo-text { font-weight: 800; color: var(--navy); font-size: 20px; line-height: 1; display: flex; flex-direction: column; }
-.logo-text small { font-weight: 500; color: var(--muted); font-size: 11px; margin-top: 2px; }
+.logo { display: flex; align-items: center; }
+.logo-text { display: flex; flex-direction: column; line-height: 1; }
+.logo-mark { display: flex; align-items: baseline; }
+.logo-e { color: var(--brand-red); font-weight: 900; font-size: 26px; line-height: 1; letter-spacing: -0.5px; }
+.logo-name { color: var(--navy); font-weight: 800; font-size: 20px; line-height: 1; }
+.logo-text small { font-weight: 500; color: var(--muted); font-size: 11px; margin-top: 3px; }
 .hdr-nav { display: flex; align-items: center; gap: 22px; margin-left: auto; }
 .hdr-nav a { font-weight: 600; color: var(--text); font-size: 15px; }
 .hdr-nav a.active { color: var(--navy); }

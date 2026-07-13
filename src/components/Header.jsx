@@ -16,8 +16,10 @@ export default function Header() {
     <header className="hdr">
       <div className="hdr-inner container">
         <Link to="/" className="logo" onClick={() => setOpen(false)}>
-          <span className="logo-star">★</span>
-          <span className="logo-text">e스타필드<small>공인중개사사무소</small></span>
+          <span className="logo-text">
+            <span className="logo-mark"><span className="logo-e">e</span><span className="logo-name">스타필드</span></span>
+            <small>공인중개사사무소</small>
+          </span>
         </Link>
         <nav className={`hdr-nav ${open ? 'is-open' : ''}`}>
           {menu.map((m) => (
