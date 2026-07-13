@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { company, useMethods, listings } from '../data.js'
+import { company, useMethods } from '../data.js'
+import { fetchListings } from '../lib/listingsApi.js'
 import SectionTitle from '../components/SectionTitle.jsx'
 import PropertyTypeCards from '../components/PropertyTypeCards.jsx'
 import StepGuide from '../components/StepGuide.jsx'
@@ -7,7 +9,20 @@ import CtaBanner from '../components/CtaBanner.jsx'
 import { dealLabel } from '../lib/format.js'
 
 export default function Home() {
-  const featured = listings.slice(0, 4)
+  const [items, setItems] = useState([])
+
+  useEffect(() => {
+    let cancelled = false
+    fetchListings().then((data) => {
+      if (cancelled) return
+      setItems(data)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const featured = items.slice(0, 4)
   return (
     <>
       <section className="hero">
