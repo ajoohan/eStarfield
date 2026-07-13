@@ -189,6 +189,7 @@ img { max-width: 100%; display: block; }
 .contact-form input, .contact-form select, .contact-form textarea { width: 100%; margin-top: 6px; padding: 11px 12px; border: 1px solid #d7dce3; border-radius: 8px; font-size: 15px; font-family: inherit; font-weight: 400; color: var(--text); }
 .contact-form textarea { resize: vertical; }
 .demo-note { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
+.form-error { color: #b3261e; font-size: 13px; margin: 12px 0 0; font-weight: 600; }
 .sent-box strong { color: var(--navy); font-size: 18px; display: block; margin-bottom: 10px; }
 .sent-box p { margin: 0 0 8px; color: var(--text); }
 @media (max-width: 780px) { .contact-grid { grid-template-columns: 1fr; } }
