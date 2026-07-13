@@ -216,7 +216,7 @@ git add -A && git commit -m "feat: scaffold Vite+React project with routing skel
 ```js
 export const company = {
   name: 'e스타필드 공인중개사사무소',
-  ceo: 'OOO (변경예정)',
+  ceo: '이훈희',
   phone: '031-793-9500',
   email: 'estarhanam@naver.com',
   address: '경기 하남시 하남유니온로 70-1 에일린의뜰 단지내 상가 110호',
