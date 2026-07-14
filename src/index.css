@@ -333,3 +333,58 @@ img { max-width: 100%; display: block; }
 .adm-reply-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
 .adm-reply-actions .btn { flex: 0 0 auto; }
 @media (max-width: 640px) { .adm-topbar { padding: 18px 20px; } .adm-tabs { padding: 0 20px; } .adm-content { padding: 30px 20px 60px; } }
+
+/* Board list (게시판 목록) */
+.bd-wrap { overflow-x: auto; border-top: 2px solid var(--ink); }
+.bd-table { width: 100%; border-collapse: collapse; min-width: 860px; background: var(--surface); }
+.bd-table th { font-family: var(--display); font-size: 14px; font-weight: 800; color: var(--ink); padding: 16px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; text-align: center; }
+.bd-table td { padding: 18px 12px; border-bottom: 1px solid var(--line-soft); font-size: 14.5px; color: var(--ink-soft); text-align: center; }
+.bd-col-no { width: 64px; color: var(--muted); }
+.bd-col-cat { width: 110px; white-space: nowrap; }
+.bd-col-title { text-align: left !important; }
+.bd-col-title a { color: var(--ink); font-weight: 600; }
+.bd-col-title a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.bd-col-file { width: 90px; }
+.bd-col-date { width: 120px; white-space: nowrap; color: var(--muted); }
+.bd-col-views { width: 80px; color: var(--muted); }
+.bd-col-dept { width: 150px; white-space: nowrap; }
+.bd-file-badge { font-size: 13px; }
+.bd-dash { color: var(--faint); }
+
+/* Post detail (게시물 상세) */
+.pd-page { max-width: 980px; }
+.pd-title-card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 40px 32px; text-align: center; margin-bottom: 28px; }
+.pd-title-card h1 { font-family: var(--display); font-size: clamp(24px, 3.4vw, 34px); font-weight: 800; letter-spacing: -0.035em; color: var(--ink); margin: 0; line-height: 1.2; }
+.pd-cat { text-align: center; color: var(--muted); margin: 0 0 26px; font-size: 15px; }
+.pd-cat span { font-family: var(--display); font-weight: 700; color: var(--ink); margin-right: 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+.pd-rows { list-style: none; padding: 0; margin: 0 0 28px; border-top: 1px solid var(--line); }
+.pd-rows > li { display: flex; gap: 18px; padding: 16px 4px; border-bottom: 1px solid var(--line-soft); font-size: 15px; }
+.pd-label { font-family: var(--display); width: 120px; flex-shrink: 0; font-weight: 700; color: var(--ink); font-size: 13.5px; padding-top: 2px; }
+.pd-value { color: var(--ink-soft); white-space: pre-line; line-height: 1.75; min-width: 0; }
+.pd-files { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.pd-files li { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pd-file-name { color: var(--ink); font-weight: 600; }
+.pd-file-name:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pd-dl { color: var(--muted); }
+.pd-file-preview { border: 1px solid var(--line); border-radius: var(--radius-btn); padding: 5px 13px; font-size: 13px; font-weight: 600; color: var(--ink-soft); transition: border-color .16s, color .16s; }
+.pd-file-preview:hover { border-color: var(--ink); color: var(--ink); }
+.pd-content { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-2); padding: 26px 28px; color: var(--ink-soft); white-space: pre-line; line-height: 1.85; margin-bottom: 28px; }
+.pd-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 34px; flex-wrap: wrap; }
+.pd-meta { color: var(--muted); font-size: 13.5px; }
+.pd-nav { list-style: none; padding: 0; margin: 0 0 26px; border-top: 1px solid var(--line); }
+.pd-nav li { display: flex; gap: 18px; padding: 15px 4px; border-bottom: 1px solid var(--line-soft); font-size: 15px; }
+.pd-nav a { color: var(--ink-soft); }
+.pd-nav a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.pd-board-back a { color: var(--muted); font-size: 14px; }
+.pd-board-back a:hover { color: var(--ink); }
+@media (max-width: 640px) { .pd-rows > li, .pd-nav li { flex-direction: column; gap: 6px; } .pd-label { width: auto; } }
+
+/* Admin posts */
+.adm-board-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.adm-board-select { padding: 11px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; color: var(--ink); background: var(--surface); }
+.adm-files { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.adm-file-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 500; letter-spacing: normal; text-transform: none; color: var(--ink-soft); }
+.adm-file-chip button { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 15px; line-height: 1; padding: 0; }
+.adm-file-chip button:hover { color: #a8341f; }
+.adm-file-new { border-style: dashed; }
+.adm-files input[type='file'] { font-size: 13px; letter-spacing: normal; text-transform: none; }

@@ -3,6 +3,7 @@ import { supabase, supabaseReady } from '../lib/supabase.js'
 import AdminLogin from '../components/admin/AdminLogin.jsx'
 import ListingsManager from '../components/admin/ListingsManager.jsx'
 import InquiriesManager from '../components/admin/InquiriesManager.jsx'
+import PostsManager from '../components/admin/PostsManager.jsx'
 
 export default function Admin() {
   const [session, setSession] = useState(null)
@@ -105,6 +106,13 @@ export default function Admin() {
         </button>
         <button
           type="button"
+          className={tab === 'posts' ? 'adm-tab is-active' : 'adm-tab'}
+          onClick={() => setTab('posts')}
+        >
+          게시판
+        </button>
+        <button
+          type="button"
           className={tab === 'inquiries' ? 'adm-tab is-active' : 'adm-tab'}
           onClick={() => setTab('inquiries')}
         >
@@ -113,7 +121,7 @@ export default function Admin() {
       </nav>
 
       <main className="adm-content">
-        {tab === 'listings' ? <ListingsManager /> : <InquiriesManager />}
+        {tab === 'listings' ? <ListingsManager /> : tab === 'posts' ? <PostsManager /> : <InquiriesManager />}
       </main>
     </div>
   )

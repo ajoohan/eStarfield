@@ -6,8 +6,8 @@ import Home from './pages/Home.jsx'
 import About from './pages/About.jsx'
 import Complexes from './pages/Complexes.jsx'
 import Listings from './pages/Listings.jsx'
-import Process from './pages/Process.jsx'
-import Policy from './pages/Policy.jsx'
+import BoardPage from './pages/BoardPage.jsx'
+import PostDetail from './pages/PostDetail.jsx'
 import Contact from './pages/Contact.jsx'
 import Admin from './pages/Admin.jsx'
 
@@ -21,8 +21,10 @@ export default function App() {
       <Route path="/about" element={<About />} />
       <Route path="/complexes" element={<Complexes />} />
       <Route path="/listings" element={<Listings />} />
-      <Route path="/process" element={<Process />} />
-      <Route path="/policy" element={<Policy />} />
+      <Route path="/process" element={<BoardPage board="process" />} />
+      <Route path="/process/:id" element={<PostDetail board="process" />} />
+      <Route path="/policy" element={<BoardPage board="policy" />} />
+      <Route path="/policy/:id" element={<PostDetail board="policy" />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/admin" element={<Admin />} />
     </Routes>

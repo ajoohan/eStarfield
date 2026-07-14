@@ -80,3 +80,50 @@ export const useMethods = [
   { no: 2, title: '간편 문의 접수', desc: '문의 페이지에 조건을 남기시면 맞는 매물을 정리해 연락드립니다.' },
   { no: 3, title: '매물 직접 검색', desc: '매물정보 페이지에서 유형·거래유형으로 골라 관심 매물을 확인하세요.' },
 ]
+
+// 게시판 메타 (계약절차안내/부동산정책)
+export const boardsMeta = {
+  process: { label: '계약절차안내', eyebrow: 'PROCESS', sub: '계약 절차와 준비 서류, 관련 서식을 안내합니다.' },
+  policy: { label: '부동산정책', eyebrow: 'POLICY', sub: '부동산 정책·제도와 중개보수 기준을 안내합니다.' },
+}
+
+// Supabase 미연결 시 표시할 폴백 게시물 (스키마 시드와 동일 내용)
+export const fallbackPosts = [
+  {
+    id: 2, board: 'process', category: '임대차', title: '전·월세(임대차) 계약 절차 안내',
+    department: 'e스타필드 공인중개사사무소', phone: '031-793-9500', duration: '', fee: '상담 무료',
+    how_to_apply: '전화(031-793-9500) 또는 방문 상담',
+    required_docs: '임차인: 신분증, 계약금, 도장\n임대인: 신분증, 등기권리증, 도장',
+    steps: '① 매물 확인·상담 → ② 현장 방문 → ③ 조건 협의 → ④ 계약 체결 → ⑤ 잔금·입주(확정일자)',
+    related_law: '주택임대차보호법, 상가건물 임대차보호법', etc_note: '',
+    content: '임대차 계약 시 등기부등본으로 선순위 권리관계를 확인하고, 잔금 후 전입신고와 확정일자를 받아 보증금을 보호하세요. 세부 절차는 매물 상황에 따라 달라질 수 있습니다.',
+    attachments: [], views: 0, created_at: '2026-07-14', updated_at: '2026-07-14',
+  },
+  {
+    id: 1, board: 'process', category: '매매', title: '부동산 매매 계약 절차 안내',
+    department: 'e스타필드 공인중개사사무소', phone: '031-793-9500', duration: '', fee: '상담 무료',
+    how_to_apply: '전화(031-793-9500) 또는 방문 상담',
+    required_docs: '매수인: 신분증, 계약금, 도장\n매도인: 신분증, 등기권리증, 인감증명서, 도장',
+    steps: '① 매물 확인·상담 → ② 현장 방문 → ③ 조건 협의 → ④ 계약 체결 → ⑤ 잔금·소유권 이전',
+    related_law: '공인중개사법, 부동산 거래신고 등에 관한 법률', etc_note: '',
+    content: '매매 계약은 등기부등본·권리관계 확인부터 잔금·소유권 이전까지 전 과정을 함께 진행해 드립니다. 계약 전 중개대상물 확인·설명서를 반드시 확인하세요.',
+    attachments: [], views: 0, created_at: '2026-07-14', updated_at: '2026-07-14',
+  },
+  {
+    id: 4, board: 'policy', category: '거래 유의사항', title: '부동산 거래 시 유의사항 안내',
+    department: 'e스타필드 공인중개사사무소', phone: '031-793-9500', duration: '', fee: '',
+    how_to_apply: '', required_docs: '', steps: '',
+    related_law: '부동산 거래신고 등에 관한 법률', etc_note: '',
+    content: '1. 계약 전 등기부등본으로 소유자·근저당 등 권리관계를 확인하세요.\n2. 중개대상물 확인·설명서를 교부받고 내용을 확인하세요.\n3. 계약금·잔금은 등기부상 소유자 명의 계좌로 이체하세요.\n4. 주택 매매 계약 체결 시 30일 이내 부동산 거래신고 대상입니다.\n5. 임대차는 전입신고·확정일자로 보증금을 보호하세요.',
+    attachments: [], views: 0, created_at: '2026-07-14', updated_at: '2026-07-14',
+  },
+  {
+    id: 3, board: 'policy', category: '중개보수', title: '부동산 중개보수 요율 안내',
+    department: 'e스타필드 공인중개사사무소', phone: '031-793-9500', duration: '', fee: '',
+    how_to_apply: '', required_docs: '', steps: '',
+    related_law: '공인중개사법 시행규칙, 경기도 주택 중개보수 등에 관한 조례',
+    etc_note: '실제 중개보수는 거래금액·유형에 따라 법정 한도 내에서 상호 협의로 결정됩니다.',
+    content: '주택 매매·교환: 거래금액 구간별 0.4% ~ 0.7%\n주택 임대차: 거래금액 구간별 0.3% ~ 0.6%\n오피스텔(주거용 요건): 매매 0.5% / 임대차 0.4%\n상가·사무실·토지 등: 매매·임대차 0.9% 이내 협의\n\n정확한 금액은 계약 전 안내해 드립니다.',
+    attachments: [], views: 0, created_at: '2026-07-14', updated_at: '2026-07-14',
+  },
+]
