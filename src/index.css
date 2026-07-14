@@ -264,7 +264,7 @@ img { max-width: 100%; display: block; }
 .adm-shell { min-height: 100vh; background: var(--bg); display: flex; flex-direction: column; }
 
 /* Login */
-.adm-login-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(rgba(255,255,255,.86), rgba(255,255,255,.86)), url('/hero-living.jpg') center 42% / cover no-repeat; }
+.adm-login-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(rgba(20,20,18,.55), rgba(20,20,18,.55)), url('/hero-living.jpg') center 42% / cover no-repeat; }
 .adm-login-card { background: rgba(255,255,255,.92); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: var(--radius); border: 1px solid var(--line); padding: 48px 40px; width: 100%; max-width: 380px; box-shadow: var(--shadow-hover); }
 .adm-login-title { font-family: var(--display); color: var(--ink); font-size: 24px; margin: 0 0 8px; text-align: center; letter-spacing: -0.04em; font-weight: 800; }
 .adm-login-sub { color: var(--muted); font-size: 14px; margin: 0 0 28px; text-align: center; }
