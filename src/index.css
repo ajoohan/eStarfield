@@ -92,7 +92,7 @@ img { max-width: 100%; display: block; }
 .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.08); }
 .btn:active { transform: scale(.985); }
 /* Section title */
-.sec-title { max-width: 860px; margin: 0 auto 60px; }
+.sec-title { max-width: 860px; margin: 0 0 60px; }
 .sec-eyebrow { display: inline-block; margin-bottom: 20px; }
 .sec-title h2 { font-family: var(--display); font-size: clamp(30px, 4.4vw, 52px); line-height: 1.08; letter-spacing: -0.04em; color: var(--ink); margin: 0 0 18px; font-weight: 800; }
 .sec-title p { color: var(--muted); margin: 0; font-size: 17px; max-width: 560px; }
