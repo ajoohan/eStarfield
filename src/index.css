@@ -394,3 +394,5 @@ img { max-width: 100%; display: block; }
 .adm-file-chip button:hover { color: #a8341f; }
 .adm-file-new { border-style: dashed; }
 .adm-files input[type='file'] { font-size: 13px; letter-spacing: normal; text-transform: none; }
+.adm-remember { font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--ink-soft); margin: 2px 0 16px; }
+.adm-remember input { accent-color: var(--spot); width: 15px; height: 15px; }
