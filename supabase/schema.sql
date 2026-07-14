@@ -168,6 +168,39 @@ select * from (values
 ) as seed(board, category, title, department, phone, duration, fee, how_to_apply, required_docs, steps, related_law, etc_note, content)
 where not exists (select 1 from public.posts);
 
+-- ---------- 8.5) 주변단지(complexes) ----------
+create table if not exists public.complexes (
+  id          bigint generated always as identity primary key,
+  name        text    not null,
+  category    text    default '',
+  description text    default '',
+  tags        jsonb   not null default '[]',
+  sort_order  int     not null default 0,
+  is_active   boolean not null default true,
+  created_at  timestamptz not null default now()
+);
+
+alter table public.complexes enable row level security;
+
+drop policy if exists "complexes_public_read" on public.complexes;
+create policy "complexes_public_read" on public.complexes
+  for select using (is_active = true);
+
+drop policy if exists "complexes_admin_all" on public.complexes;
+create policy "complexes_admin_all" on public.complexes
+  for all to authenticated using (true) with check (true);
+
+-- 주변단지 시드(최초 1회만)
+insert into public.complexes (name, category, description, tags, sort_order)
+select * from (values
+  ('하남에일린의뜰','아파트 · 단지내 상가','본 사무소가 위치한 단지. 미사·유니온 생활권 중심으로 단지 내 상가와 배후 세대를 두루 안내합니다.','["본사무소","단지내상가"]'::jsonb,1),
+  ('미사강변센트럴자이','아파트','미사강변도시 대단지. 학교·마트·공원 등 생활 인프라가 가까워 실거주 선호가 높은 단지입니다.','["대단지","학군"]'::jsonb,2),
+  ('미사강변리버뷰자이','아파트','한강·녹지 접근성이 좋은 미사강변 생활권 단지. 조망과 쾌적한 주거환경이 강점입니다.','["한강생활권","조망"]'::jsonb,3),
+  ('미사강변골든센트로','주상복합 · 상가','역세권 접근성과 상권을 함께 갖춘 주상복합. 사무실·상가 수요 문의가 많은 지역입니다.','["역세권","상권"]'::jsonb,4),
+  ('하남유니온시티 일대','아파트 · 상업지역','유니온로를 따라 형성된 신규 주거·상업지역. 지식산업센터·상가 등 업무용 매물이 풍부합니다.','["유니온로","업무·상가"]'::jsonb,5)
+) as seed(name, category, description, tags, sort_order)
+where not exists (select 1 from public.complexes);
+
 -- ---------- 9) 매물 시드(최초 1회만) ----------
 -- listings가 비어 있을 때만 데모 매물을 넣는다.
 insert into public.listings

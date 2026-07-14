@@ -4,20 +4,21 @@ import AdminLogin from '../components/admin/AdminLogin.jsx'
 import ListingsManager from '../components/admin/ListingsManager.jsx'
 import InquiriesManager from '../components/admin/InquiriesManager.jsx'
 import PostsManager from '../components/admin/PostsManager.jsx'
+import ComplexesManager from '../components/admin/ComplexesManager.jsx'
 
-const ADMIN_VERSION = 'Version 0.7'
+const ADMIN_VERSION = 'Version 0.8'
 const ADMIN_VERSION_DATE = '2026.07.14'
 
-const ADMIN_TABS = [
-  ['listings', '매물관리'],
-  ['posts', '게시판'],
-  ['inquiries', '문의함'],
+const ADMIN_MENU = [
+  { group: '컨텐츠 관리', items: [['complexes', '주변단지소개'], ['listings', '매물정보']] },
+  { group: '정책 관리', items: [['process', '계약절차안내'], ['policy', '부동산정책']] },
+  { group: '문의 관리', items: [['inquiries', '문의함']] },
 ]
 
 export default function Admin() {
   const [session, setSession] = useState(null)
   const [checkingSession, setCheckingSession] = useState(true)
-  const [tab, setTab] = useState('listings')
+  const [tab, setTab] = useState('complexes')
   const [signingOut, setSigningOut] = useState(false)
 
   useEffect(() => {
@@ -107,15 +108,20 @@ export default function Admin() {
         </div>
 
         <nav className="adm-side-nav">
-          {ADMIN_TABS.map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              className={tab === key ? 'is-active' : ''}
-              onClick={() => setTab(key)}
-            >
-              {label}
-            </button>
+          {ADMIN_MENU.map(({ group, items }) => (
+            <div key={group} className="adm-side-group">
+              <span className="adm-side-group-label">{group}</span>
+              {items.map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={tab === key ? 'is-active' : ''}
+                  onClick={() => setTab(key)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
 
@@ -132,7 +138,11 @@ export default function Admin() {
       </aside>
 
       <main className="adm-main">
-        {tab === 'listings' ? <ListingsManager /> : tab === 'posts' ? <PostsManager /> : <InquiriesManager />}
+        {tab === 'complexes' && <ComplexesManager />}
+        {tab === 'listings' && <ListingsManager />}
+        {tab === 'process' && <PostsManager key="process" board="process" />}
+        {tab === 'policy' && <PostsManager key="policy" board="policy" />}
+        {tab === 'inquiries' && <InquiriesManager />}
       </main>
     </div>
   )

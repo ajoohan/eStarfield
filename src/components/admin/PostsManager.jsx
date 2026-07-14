@@ -32,8 +32,7 @@ function fileKeyFor(name) {
   return `posts/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`
 }
 
-export default function PostsManager() {
-  const [board, setBoard] = useState('process')
+export default function PostsManager({ board }) {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -202,17 +201,10 @@ export default function PostsManager() {
   return (
     <div className="adm-panel">
       <div className="adm-panel-head">
-        <h2>게시판 관리</h2>
-        <div className="adm-board-actions">
-          <select className="adm-board-select" value={board} onChange={(e) => { setShowForm(false); resetFormState(); setBoard(e.target.value) }}>
-            {Object.entries(boardsMeta).map(([key, m]) => (
-              <option key={key} value={key}>{m.label}</option>
-            ))}
-          </select>
-          <button type="button" className="btn btn-navy" onClick={openNewForm}>
-            + 게시물 등록
-          </button>
-        </div>
+        <h2>{boardsMeta[board].label} 관리</h2>
+        <button type="button" className="btn btn-navy" onClick={openNewForm}>
+          + 게시물 등록
+        </button>
       </div>
 
       {error && <p className="adm-error">{error}</p>}
