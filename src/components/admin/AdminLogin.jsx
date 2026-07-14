@@ -27,7 +27,12 @@ export default function AdminLogin() {
   return (
     <div className="adm-login-wrap">
       <form className="adm-login-card" onSubmit={handleSubmit}>
-        <h1 className="adm-login-title">e스타필드 관리자</h1>
+        <h1 className="adm-login-title">
+          <span className="adm-login-logo">
+            <b className="adm-login-e">e</b>스타필드
+          </span>
+          <span className="adm-login-badge">관리자</span>
+        </h1>
         <p className="adm-login-sub">관리자 계정으로 로그인하세요.</p>
         <label className="adm-field">
           이메일

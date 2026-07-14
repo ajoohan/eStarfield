@@ -265,10 +265,16 @@ img { max-width: 100%; display: block; }
 
 /* Login */
 .adm-login-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(rgba(20,20,18,.55), rgba(20,20,18,.55)), url('/hero-living.jpg') center 42% / cover no-repeat; }
-.adm-login-card { background: rgba(255,255,255,.92); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: var(--radius); border: 1px solid var(--line); padding: 48px 40px; width: 100%; max-width: 380px; box-shadow: var(--shadow-hover); }
-.adm-login-title { font-family: var(--display); color: var(--ink); font-size: 24px; margin: 0 0 8px; text-align: center; letter-spacing: -0.04em; font-weight: 800; }
-.adm-login-sub { color: var(--muted); font-size: 14px; margin: 0 0 28px; text-align: center; }
-.adm-login-btn { width: 100%; margin-top: 6px; }
+.adm-login-card { position: relative; overflow: hidden; background: #fff; border-radius: 14px; border: none; padding: 52px 40px 44px; width: 100%; max-width: 400px; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.adm-login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--spot), #D97A52); }
+.adm-login-title { font-family: var(--display); color: var(--ink); font-size: 27px; margin: 0 0 10px; text-align: center; letter-spacing: -0.04em; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.adm-login-e { color: var(--spot); font-weight: 900; font-style: normal; font-size: 31px; letter-spacing: -1px; }
+.adm-login-badge { font-family: var(--display); background: var(--spot); color: #fff; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 999px; letter-spacing: .1em; text-transform: uppercase; }
+.adm-login-sub { color: var(--muted); font-size: 14px; margin: 0 0 30px; text-align: center; }
+.adm-login-card .adm-field input { background: #fff; border-color: #D8D6D0; }
+.adm-login-card .adm-field input:focus { border-color: var(--spot); box-shadow: 0 0 0 3px rgba(176,84,47,.14); }
+.adm-login-btn { width: 100%; margin-top: 8px; background: var(--spot) !important; color: #fff !important; border-color: var(--spot) !important; font-weight: 700; }
+.adm-login-btn:hover { background: var(--spot-deep) !important; border-color: var(--spot-deep) !important; }
 
 /* Config error */
 .adm-config-error { max-width: 520px; margin: 80px auto; background: var(--surface); border: 1px solid #e6c3bb; border-radius: var(--radius); padding: 32px; text-align: center; }
