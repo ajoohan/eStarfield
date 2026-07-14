@@ -16,6 +16,7 @@ export async function fetchComplexes() {
       category: r.category || '',
       desc: r.description || '',
       tags: Array.isArray(r.tags) ? r.tags : [],
+      image: r.image || '',
     }))
     return { complexes: rows, fallback: false }
   } catch (err) {

@@ -180,6 +180,9 @@ create table if not exists public.complexes (
   created_at  timestamptz not null default now()
 );
 
+-- 기존 테이블에 대표 이미지 컬럼 추가(이미 있으면 무시)
+alter table public.complexes add column if not exists image text default '';
+
 alter table public.complexes enable row level security;
 
 drop policy if exists "complexes_public_read" on public.complexes;

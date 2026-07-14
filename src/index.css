@@ -433,3 +433,22 @@ img { max-width: 100%; display: block; }
   .adm-side-group { flex-direction: row; align-items: center; margin-bottom: 0; }
   .adm-side-group-label { display: none; }
 }
+
+/* Admin thumbnail list */
+.adm-thumb-item { display: flex; gap: 16px; align-items: flex-start; }
+.adm-thumb { width: 108px; height: 80px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+.adm-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-thumb span { font-family: var(--display); font-size: 10px; color: var(--faint); font-weight: 700; letter-spacing: .08em; }
+.adm-thumb-body { flex: 1; min-width: 0; }
+.adm-img-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+.adm-img-preview { width: 120px; height: 84px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+.adm-img-row input[type='file'] { font-size: 13px; letter-spacing: normal; text-transform: none; }
+.adm-img-remove { padding: 8px 14px !important; font-size: 13px !important; }
+@media (max-width: 520px) { .adm-thumb-item { flex-direction: column; } .adm-thumb { width: 100%; height: 140px; } }
+
+/* Public images */
+.lc-thumb img, .feat-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.modal-photo { margin: 6px 0 16px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.modal-photo img { width: 100%; height: 210px; object-fit: cover; display: block; }
+.cx-photo { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 18px; }
+.cx-photo img { width: 100%; height: 160px; object-fit: cover; display: block; }

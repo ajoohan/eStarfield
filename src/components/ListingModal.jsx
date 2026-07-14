@@ -18,6 +18,11 @@ export default function ListingModal({ item, onClose }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
         <button className="modal-x" onClick={onClose} aria-label="닫기">×</button>
+        {item.thumb && (
+          <div className="modal-photo">
+            <img src={item.thumb} alt={item.title} />
+          </div>
+        )}
         <span className="tag">{dealLabel(item.dealKey)} · {typeLabel}</span>
         <h3>{item.title}</h3>
         <p className="modal-price">{priceLabel(item)}</p>

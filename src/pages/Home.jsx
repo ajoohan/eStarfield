@@ -57,7 +57,9 @@ export default function Home() {
           <div className="feat-grid">
             {featured.map((l) => (
               <div key={l.id} className="feat-card">
-                <div className="feat-thumb">{l.title.slice(0, 1)}</div>
+                <div className="feat-thumb">
+                  {l.thumb ? <img src={l.thumb} alt={l.title} loading="lazy" /> : l.title.slice(0, 1)}
+                </div>
                 <div className="feat-body">
                   <span className="tag">{dealLabel(l.dealKey)}</span>
                   <strong>{l.title}</strong>

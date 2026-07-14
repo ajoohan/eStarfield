@@ -36,6 +36,11 @@ export default function Complexes() {
               return (
                 <div key={c.name} className={`cx-card${isHq ? ' cx-card-hq' : ''}`}>
                   {isHq && <span className="cx-badge">본 사무소</span>}
+                  {c.image && (
+                    <div className="cx-photo">
+                      <img src={c.image} alt={c.name} loading="lazy" />
+                    </div>
+                  )}
                   <span className="cx-category">{c.category}</span>
                   <strong>{c.name}</strong>
                   <p>{c.desc}</p>

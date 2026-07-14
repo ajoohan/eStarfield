@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase.js'
+import { uploadPublicImage } from '../../lib/storage.js'
 
 const emptyForm = {
   name: '',
@@ -29,6 +30,8 @@ export default function ComplexesManager() {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
+  const [imageUrl, setImageUrl] = useState('')
+  const [imageFile, setImageFile] = useState(null)
 
   async function loadRows() {
     setLoading(true)
@@ -59,6 +62,8 @@ export default function ComplexesManager() {
   function openNewForm() {
     setEditingId(null)
     setForm(emptyForm)
+    setImageUrl('')
+    setImageFile(null)
     setShowForm(true)
     setError('')
   }
@@ -73,6 +78,8 @@ export default function ComplexesManager() {
       sort_order: row.sort_order ?? 0,
       is_active: row.is_active ?? true,
     })
+    setImageUrl(row.image || '')
+    setImageFile(null)
     setShowForm(true)
     setError('')
   }
@@ -81,6 +88,8 @@ export default function ComplexesManager() {
     setShowForm(false)
     setEditingId(null)
     setForm(emptyForm)
+    setImageUrl('')
+    setImageFile(null)
   }
 
   function updateField(field, value) {
@@ -92,7 +101,13 @@ export default function ComplexesManager() {
     setSaving(true)
     setError('')
     try {
+      let image = imageUrl
+      if (imageFile) {
+        image = await uploadPublicImage(imageFile, 'complexes')
+      }
+
       const payload = {
+        image,
         name: form.name,
         category: form.category,
         description: form.description,
@@ -186,6 +201,31 @@ export default function ComplexesManager() {
               placeholder="예: 대단지, 학군 — '본사무소' 태그를 넣으면 강조 표시됩니다"
             />
           </label>
+          <div className="adm-field">
+            대표 이미지
+            <div className="adm-img-row">
+              {(imageFile || imageUrl) && (
+                <img
+                  className="adm-img-preview"
+                  src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
+                  alt="대표 이미지 미리보기"
+                />
+              )}
+              <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
+              {(imageFile || imageUrl) && (
+                <button
+                  type="button"
+                  className="btn btn-ghost-navy adm-img-remove"
+                  onClick={() => {
+                    setImageFile(null)
+                    setImageUrl('')
+                  }}
+                >
+                  이미지 제거
+                </button>
+              )}
+            </div>
+          </div>
           <label className="adm-field adm-check">
             <input
               type="checkbox"
@@ -212,23 +252,28 @@ export default function ComplexesManager() {
       ) : (
         <ul className="adm-list">
           {rows.map((row) => (
-            <li key={row.id} className="adm-list-item">
-              <div className="adm-list-main">
-                <strong>{row.name}</strong>
-                <span className={`adm-badge ${row.is_active ? 'adm-badge-on' : 'adm-badge-off'}`}>
-                  {row.is_active ? '공개' : '비공개'}
-                </span>
+            <li key={row.id} className="adm-list-item adm-thumb-item">
+              <div className="adm-thumb">
+                {row.image ? <img src={row.image} alt="" /> : <span>NO IMAGE</span>}
               </div>
-              <p className="adm-list-meta">
-                {row.category || '분류 없음'} · 태그 {tagsToText(row.tags) || '-'} · 정렬 {row.sort_order}
-              </p>
-              <div className="adm-list-actions">
-                <button type="button" className="btn btn-ghost-navy" onClick={() => openEditForm(row)}>
-                  수정
-                </button>
-                <button type="button" className="btn btn-danger" onClick={() => handleDelete(row)}>
-                  삭제
-                </button>
+              <div className="adm-thumb-body">
+                <div className="adm-list-main">
+                  <strong>{row.name}</strong>
+                  <span className={`adm-badge ${row.is_active ? 'adm-badge-on' : 'adm-badge-off'}`}>
+                    {row.is_active ? '공개' : '비공개'}
+                  </span>
+                </div>
+                <p className="adm-list-meta">
+                  {row.category || '분류 없음'} · 태그 {tagsToText(row.tags) || '-'} · 정렬 {row.sort_order}
+                </p>
+                <div className="adm-list-actions">
+                  <button type="button" className="btn btn-ghost-navy" onClick={() => openEditForm(row)}>
+                    수정
+                  </button>
+                  <button type="button" className="btn btn-danger" onClick={() => handleDelete(row)}>
+                    삭제
+                  </button>
+                </div>
               </div>
             </li>
           ))}

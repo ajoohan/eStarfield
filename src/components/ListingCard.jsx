@@ -5,7 +5,9 @@ export default function ListingCard({ item, onClick }) {
   const typeLabel = propertyTypes.find((t) => t.key === item.typeKey)?.label ?? ''
   return (
     <button className="lc" onClick={() => onClick(item)}>
-      <div className="lc-thumb"><span>{typeLabel}</span></div>
+      <div className="lc-thumb">
+        {item.thumb ? <img src={item.thumb} alt={item.title} loading="lazy" /> : <span>{typeLabel}</span>}
+      </div>
       <div className="lc-body">
         <span className="tag">{dealLabel(item.dealKey)}</span>
         <strong>{item.title}</strong>

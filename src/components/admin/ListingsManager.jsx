@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase.js'
+import { uploadPublicImage } from '../../lib/storage.js'
 import { propertyTypes, dealTypes } from '../../data.js'
 
 const emptyForm = {
@@ -32,6 +33,8 @@ export default function ListingsManager() {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
+  const [imageUrl, setImageUrl] = useState('') // 저장된 대표 이미지 URL
+  const [imageFile, setImageFile] = useState(null) // 새로 선택한 파일
 
   async function loadListings() {
     setLoading(true)
@@ -62,6 +65,8 @@ export default function ListingsManager() {
   function openNewForm() {
     setEditingId(null)
     setForm(emptyForm)
+    setImageUrl('')
+    setImageFile(null)
     setShowForm(true)
     setError('')
   }
@@ -82,6 +87,8 @@ export default function ListingsManager() {
       is_active: row.is_active ?? true,
       sort_order: row.sort_order ?? 0,
     })
+    setImageUrl(row.thumb || '')
+    setImageFile(null)
     setShowForm(true)
     setError('')
   }
@@ -90,6 +97,8 @@ export default function ListingsManager() {
     setShowForm(false)
     setEditingId(null)
     setForm(emptyForm)
+    setImageUrl('')
+    setImageFile(null)
   }
 
   function updateField(field, value) {
@@ -101,7 +110,13 @@ export default function ListingsManager() {
     setSaving(true)
     setError('')
     try {
+      let thumb = imageUrl
+      if (imageFile) {
+        thumb = await uploadPublicImage(imageFile, 'listings')
+      }
+
       const payload = {
+        thumb,
         title: form.title,
         type_key: form.type_key,
         deal_key: form.deal_key,
@@ -241,6 +256,31 @@ export default function ListingsManager() {
               onChange={(e) => updateField('description', e.target.value)}
             />
           </label>
+          <div className="adm-field">
+            대표 이미지
+            <div className="adm-img-row">
+              {(imageFile || imageUrl) && (
+                <img
+                  className="adm-img-preview"
+                  src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
+                  alt="대표 이미지 미리보기"
+                />
+              )}
+              <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
+              {(imageFile || imageUrl) && (
+                <button
+                  type="button"
+                  className="btn btn-ghost-navy adm-img-remove"
+                  onClick={() => {
+                    setImageFile(null)
+                    setImageUrl('')
+                  }}
+                >
+                  이미지 제거
+                </button>
+              )}
+            </div>
+          </div>
           <div className="adm-form-actions">
             <button type="submit" className="btn btn-navy" disabled={saving}>
               {saving ? '저장 중…' : '저장'}
@@ -259,24 +299,29 @@ export default function ListingsManager() {
       ) : (
         <ul className="adm-list">
           {listings.map((row) => (
-            <li key={row.id} className="adm-list-item">
-              <div className="adm-list-main">
-                <strong>{row.title}</strong>
-                <span className={`adm-badge ${row.is_active ? 'adm-badge-on' : 'adm-badge-off'}`}>
-                  {row.is_active ? '공개' : '비공개'}
-                </span>
+            <li key={row.id} className="adm-list-item adm-thumb-item">
+              <div className="adm-thumb">
+                {row.thumb ? <img src={row.thumb} alt="" /> : <span>NO IMAGE</span>}
               </div>
-              <p className="adm-list-meta">
-                {typeLabel(row.type_key)} · {dealLabel(row.deal_key)} ·{' '}
-                {row.price || row.deposit || row.monthly || '-'} · {row.location}
-              </p>
-              <div className="adm-list-actions">
-                <button type="button" className="btn btn-ghost-navy" onClick={() => openEditForm(row)}>
-                  수정
-                </button>
-                <button type="button" className="btn btn-danger" onClick={() => handleDelete(row.id)}>
-                  삭제
-                </button>
+              <div className="adm-thumb-body">
+                <div className="adm-list-main">
+                  <strong>{row.title}</strong>
+                  <span className={`adm-badge ${row.is_active ? 'adm-badge-on' : 'adm-badge-off'}`}>
+                    {row.is_active ? '공개' : '비공개'}
+                  </span>
+                </div>
+                <p className="adm-list-meta">
+                  {typeLabel(row.type_key)} · {dealLabel(row.deal_key)} ·{' '}
+                  {row.price || row.deposit || row.monthly || '-'} · {row.location}
+                </p>
+                <div className="adm-list-actions">
+                  <button type="button" className="btn btn-ghost-navy" onClick={() => openEditForm(row)}>
+                    수정
+                  </button>
+                  <button type="button" className="btn btn-danger" onClick={() => handleDelete(row.id)}>
+                    삭제
+                  </button>
+                </div>
               </div>
             </li>
           ))}

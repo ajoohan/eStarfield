@@ -6,7 +6,7 @@ import InquiriesManager from '../components/admin/InquiriesManager.jsx'
 import PostsManager from '../components/admin/PostsManager.jsx'
 import ComplexesManager from '../components/admin/ComplexesManager.jsx'
 
-const ADMIN_VERSION = 'Version 0.8'
+const ADMIN_VERSION = 'Version 0.9'
 const ADMIN_VERSION_DATE = '2026.07.14'
 
 const ADMIN_MENU = [
