@@ -31,8 +31,14 @@ create table if not exists public.inquiries (
   kind       text default '',
   message    text default '',
   handled    boolean not null default false,
+  reply      text default '',
+  replied_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+-- 기존 테이블에 회신 컬럼 추가(이미 있으면 무시)
+alter table public.inquiries add column if not exists reply      text default '';
+alter table public.inquiries add column if not exists replied_at timestamptz;
 
 -- ---------- 3) RLS 활성화 ----------
 alter table public.listings  enable row level security;
