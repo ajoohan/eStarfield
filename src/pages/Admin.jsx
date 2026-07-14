@@ -5,6 +5,15 @@ import ListingsManager from '../components/admin/ListingsManager.jsx'
 import InquiriesManager from '../components/admin/InquiriesManager.jsx'
 import PostsManager from '../components/admin/PostsManager.jsx'
 
+const ADMIN_VERSION = 'Version 0.7'
+const ADMIN_VERSION_DATE = '2026.07.14'
+
+const ADMIN_TABS = [
+  ['listings', '매물관리'],
+  ['posts', '게시판'],
+  ['inquiries', '문의함'],
+]
+
 export default function Admin() {
   const [session, setSession] = useState(null)
   const [checkingSession, setCheckingSession] = useState(true)
@@ -88,39 +97,41 @@ export default function Admin() {
   }
 
   return (
-    <div className="adm-shell">
-      <header className="adm-topbar">
-        <h1>e스타필드 관리자</h1>
-        <button type="button" className="btn btn-ghost-navy" onClick={handleSignOut} disabled={signingOut}>
-          {signingOut ? '로그아웃 중…' : '로그아웃'}
-        </button>
-      </header>
+    <div className="adm-layout">
+      <aside className="adm-side">
+        <div className="adm-side-brand">
+          <span className="adm-side-logo">
+            <b>e</b>스타필드
+          </span>
+          <span className="adm-side-admin">ADMIN</span>
+        </div>
 
-      <nav className="adm-tabs">
-        <button
-          type="button"
-          className={tab === 'listings' ? 'adm-tab is-active' : 'adm-tab'}
-          onClick={() => setTab('listings')}
-        >
-          매물관리
-        </button>
-        <button
-          type="button"
-          className={tab === 'posts' ? 'adm-tab is-active' : 'adm-tab'}
-          onClick={() => setTab('posts')}
-        >
-          게시판
-        </button>
-        <button
-          type="button"
-          className={tab === 'inquiries' ? 'adm-tab is-active' : 'adm-tab'}
-          onClick={() => setTab('inquiries')}
-        >
-          문의함
-        </button>
-      </nav>
+        <nav className="adm-side-nav">
+          {ADMIN_TABS.map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              className={tab === key ? 'is-active' : ''}
+              onClick={() => setTab(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
 
-      <main className="adm-content">
+        <div className="adm-side-foot">
+          <button type="button" className="adm-side-logout" onClick={handleSignOut} disabled={signingOut}>
+            {signingOut ? '로그아웃 중…' : '로그아웃'}
+          </button>
+          <p className="adm-side-ver">
+            {ADMIN_VERSION}
+            <br />
+            {ADMIN_VERSION_DATE}
+          </p>
+        </div>
+      </aside>
+
+      <main className="adm-main">
         {tab === 'listings' ? <ListingsManager /> : tab === 'posts' ? <PostsManager /> : <InquiriesManager />}
       </main>
     </div>

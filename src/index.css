@@ -396,3 +396,34 @@ img { max-width: 100%; display: block; }
 .adm-files input[type='file'] { font-size: 13px; letter-spacing: normal; text-transform: none; }
 .adm-remember { font-size: 13.5px; letter-spacing: normal; text-transform: none; color: var(--ink-soft); margin: 2px 0 16px; }
 .adm-remember input { accent-color: var(--spot); width: 15px; height: 15px; }
+
+/* Admin sidebar layout */
+.adm-layout { display: flex; min-height: 100vh; background: var(--bg); }
+.adm-side { width: 232px; flex-shrink: 0; background: var(--ink); color: #b8b8b2; display: flex; flex-direction: column; padding: 26px 16px 20px; position: sticky; top: 0; height: 100vh; }
+.adm-side-brand { display: flex; align-items: center; gap: 10px; padding: 0 10px 20px; border-bottom: 1px solid rgba(255,255,255,.12); margin-bottom: 16px; }
+.adm-side-logo { font-family: var(--display); font-weight: 800; font-size: 19px; color: #fff; letter-spacing: -0.03em; line-height: 1; }
+.adm-side-logo b { color: var(--spot); font-weight: 900; font-size: 23px; letter-spacing: -1px; }
+.adm-side-admin { font-family: var(--display); background: var(--spot); color: #fff; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 999px; letter-spacing: .12em; }
+.adm-side-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.adm-side-nav button { text-align: left; background: none; border: none; border-left: 3px solid transparent; color: #a3a39c; font-family: var(--sans); font-size: 14.5px; font-weight: 600; padding: 12px 13px; border-radius: 0 8px 8px 0; cursor: pointer; transition: background .16s, color .16s, border-color .16s; }
+.adm-side-nav button:hover { color: #fff; background: rgba(255,255,255,.06); }
+.adm-side-nav button.is-active { color: #fff; background: rgba(255,255,255,.1); border-left-color: var(--spot); }
+.adm-side-foot { margin-top: auto; display: grid; gap: 12px; padding: 16px 10px 0; border-top: 1px solid rgba(255,255,255,.12); }
+.adm-side-logout { width: 100%; background: transparent; border: 1px solid rgba(255,255,255,.35); color: #fff; padding: 10px; border-radius: var(--radius-btn); font-size: 14px; font-weight: 600; font-family: var(--sans); cursor: pointer; transition: border-color .16s, background .16s; }
+.adm-side-logout:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+.adm-side-logout:disabled { opacity: .55; cursor: not-allowed; }
+.adm-side-ver { margin: 0; font-family: var(--display); font-size: 11.5px; color: #78786f; line-height: 1.65; letter-spacing: .02em; }
+.adm-main { flex: 1; min-width: 0; padding: 38px 36px 72px; }
+@media (max-width: 760px) {
+  .adm-layout { flex-direction: column; }
+  .adm-side { position: static; width: 100%; height: auto; padding: 16px; gap: 12px; }
+  .adm-side-brand { border-bottom: none; padding: 0 4px; margin-bottom: 4px; }
+  .adm-side-nav { flex-direction: row; overflow-x: auto; }
+  .adm-side-nav button { border-left: none; border-bottom: 3px solid transparent; border-radius: 8px 8px 0 0; white-space: nowrap; }
+  .adm-side-nav button.is-active { border-bottom-color: var(--spot); }
+  .adm-side-foot { margin-top: 0; border-top: none; padding: 0 4px; display: flex; align-items: center; justify-content: space-between; }
+  .adm-side-logout { width: auto; padding: 9px 16px; }
+  .adm-side-ver br { display: none; }
+  .adm-side-ver { font-size: 11px; }
+  .adm-main { padding: 24px 18px 56px; }
+}
