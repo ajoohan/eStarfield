@@ -22,7 +22,7 @@ const schema = a.schema({
       sortOrder: a.integer().default(0),
     })
     .authorization((allow) => [
-      allow.publicApiKey().to(['read', 'create']), // [MIGRATION] create 임시
+      allow.publicApiKey().to(['read']),
       allow.authenticated(),
     ]),
 
@@ -46,7 +46,7 @@ const schema = a.schema({
       isActive: a.boolean().default(true),
     })
     .authorization((allow) => [
-      allow.publicApiKey().to(['read', 'create']), // [MIGRATION] create 임시
+      allow.publicApiKey().to(['read']),
       allow.authenticated(),
     ]),
 
@@ -61,7 +61,7 @@ const schema = a.schema({
       isActive: a.boolean().default(true),
     })
     .authorization((allow) => [
-      allow.publicApiKey().to(['read', 'create']), // [MIGRATION] create 임시
+      allow.publicApiKey().to(['read']),
       allow.authenticated(),
     ]),
 
