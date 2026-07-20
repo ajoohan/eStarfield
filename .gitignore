@@ -2,3 +2,6 @@ node_modules
 dist
 .env
 .env.local
+.amplify
+amplify_outputs.json
+amplifyconfiguration.json

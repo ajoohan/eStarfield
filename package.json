@@ -10,12 +10,17 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",
+    "aws-amplify": "^6.18.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@aws-amplify/backend": "^1.23.0",
+    "@aws-amplify/backend-cli": "^1.8.3",
+    "@aws-appsync/utils": "^2.1.1",
     "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.9.3",
     "vite": "^5.4.8"
   }
 }
