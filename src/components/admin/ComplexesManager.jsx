@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabase.js'
-import { uploadPublicImage } from '../../lib/storage.js'
+import { adminClient } from '../../lib/amplifyClient.js'
+import { uploadPublicImage, resolveFileUrl } from '../../lib/storage.js'
 
 const emptyForm = {
   name: '',
   category: '',
   description: '',
   tags: '',
-  sort_order: 0,
-  is_active: true,
+  sortOrder: 0,
+  isActive: true,
 }
 
 function tagsToText(tags) {
-  return Array.isArray(tags) ? tags.join(', ') : ''
+  return Array.isArray(tags) ? tags.filter(Boolean).join(', ') : ''
 }
 
 function textToTags(text) {
@@ -30,6 +30,7 @@ export default function ComplexesManager() {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
+  const [imageRaw, setImageRaw] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [imageFile, setImageFile] = useState(null)
 
@@ -37,15 +38,17 @@ export default function ComplexesManager() {
     setLoading(true)
     setError('')
     try {
-      const { data, error: fetchError } = await supabase
-        .from('complexes')
-        .select('*')
-        .order('sort_order', { ascending: true })
-      if (fetchError) {
-        setError(fetchError.message || '단지 목록을 불러오지 못했습니다.')
+      const { data, errors } = await adminClient.models.Complex.list({ limit: 500 })
+      if (errors?.length) {
+        setError(errors[0]?.message || '단지 목록을 불러오지 못했습니다.')
         setRows([])
       } else {
-        setRows(data || [])
+        const mapped = await Promise.all(
+          [...(data || [])]
+            .sort((x, y) => (x.sortOrder ?? 0) - (y.sortOrder ?? 0))
+            .map(async (r) => ({ ...r, imageUrl: await resolveFileUrl(r.image || '') })),
+        )
+        setRows(mapped)
       }
     } catch (err) {
       setError(err?.message || '단지 목록을 불러오는 중 오류가 발생했습니다.')
@@ -62,6 +65,7 @@ export default function ComplexesManager() {
   function openNewForm() {
     setEditingId(null)
     setForm(emptyForm)
+    setImageRaw('')
     setImageUrl('')
     setImageFile(null)
     setShowForm(true)
@@ -75,10 +79,11 @@ export default function ComplexesManager() {
       category: row.category || '',
       description: row.description || '',
       tags: tagsToText(row.tags),
-      sort_order: row.sort_order ?? 0,
-      is_active: row.is_active ?? true,
+      sortOrder: row.sortOrder ?? 0,
+      isActive: row.isActive ?? true,
     })
-    setImageUrl(row.image || '')
+    setImageRaw(row.image || '')
+    setImageUrl(row.imageUrl || row.image || '')
     setImageFile(null)
     setShowForm(true)
     setError('')
@@ -88,6 +93,7 @@ export default function ComplexesManager() {
     setShowForm(false)
     setEditingId(null)
     setForm(emptyForm)
+    setImageRaw('')
     setImageUrl('')
     setImageFile(null)
   }
@@ -101,7 +107,7 @@ export default function ComplexesManager() {
     setSaving(true)
     setError('')
     try {
-      let image = imageUrl
+      let image = imageRaw
       if (imageFile) {
         image = await uploadPublicImage(imageFile, 'complexes')
       }
@@ -112,18 +118,18 @@ export default function ComplexesManager() {
         category: form.category,
         description: form.description,
         tags: textToTags(form.tags),
-        sort_order: Number(form.sort_order) || 0,
-        is_active: form.is_active,
+        sortOrder: Number(form.sortOrder) || 0,
+        isActive: form.isActive,
       }
 
       let result
       if (editingId) {
-        result = await supabase.from('complexes').update(payload).eq('id', editingId)
+        result = await adminClient.models.Complex.update({ id: editingId, ...payload })
       } else {
-        result = await supabase.from('complexes').insert(payload)
+        result = await adminClient.models.Complex.create(payload)
       }
-      if (result.error) {
-        setError(result.error.message || '저장에 실패했습니다.')
+      if (result.errors?.length) {
+        setError(result.errors[0]?.message || '저장에 실패했습니다.')
         return
       }
 
@@ -140,9 +146,9 @@ export default function ComplexesManager() {
     if (!confirm(`"${row.name}" 단지를 삭제하시겠습니까?`)) return
     setError('')
     try {
-      const { error: deleteError } = await supabase.from('complexes').delete().eq('id', row.id)
-      if (deleteError) {
-        setError(deleteError.message || '삭제에 실패했습니다.')
+      const { errors } = await adminClient.models.Complex.delete({ id: row.id })
+      if (errors?.length) {
+        setError(errors[0]?.message || '삭제에 실패했습니다.')
         return
       }
       await loadRows()
@@ -183,8 +189,8 @@ export default function ComplexesManager() {
               정렬순서
               <input
                 type="number"
-                value={form.sort_order}
-                onChange={(e) => updateField('sort_order', e.target.value)}
+                value={form.sortOrder}
+                onChange={(e) => updateField('sortOrder', e.target.value)}
               />
             </label>
           </div>
@@ -219,6 +225,7 @@ export default function ComplexesManager() {
                   onClick={() => {
                     setImageFile(null)
                     setImageUrl('')
+                    setImageRaw('')
                   }}
                 >
                   이미지 제거
@@ -229,8 +236,8 @@ export default function ComplexesManager() {
           <label className="adm-field adm-check">
             <input
               type="checkbox"
-              checked={form.is_active}
-              onChange={(e) => updateField('is_active', e.target.checked)}
+              checked={form.isActive}
+              onChange={(e) => updateField('isActive', e.target.checked)}
             />
             활성화(공개)
           </label>
@@ -248,23 +255,23 @@ export default function ComplexesManager() {
       {loading ? (
         <p className="adm-loading">불러오는 중…</p>
       ) : rows.length === 0 ? (
-        <p className="adm-empty">등록된 단지가 없습니다. (Supabase에 schema.sql을 실행했는지 확인하세요)</p>
+        <p className="adm-empty">등록된 단지가 없습니다.</p>
       ) : (
         <ul className="adm-list">
           {rows.map((row) => (
             <li key={row.id} className="adm-list-item adm-thumb-item">
               <div className="adm-thumb">
-                {row.image ? <img src={row.image} alt="" /> : <span>NO IMAGE</span>}
+                {row.imageUrl ? <img src={row.imageUrl} alt="" /> : <span>NO IMAGE</span>}
               </div>
               <div className="adm-thumb-body">
                 <div className="adm-list-main">
                   <strong>{row.name}</strong>
-                  <span className={`adm-badge ${row.is_active ? 'adm-badge-on' : 'adm-badge-off'}`}>
-                    {row.is_active ? '공개' : '비공개'}
+                  <span className={`adm-badge ${row.isActive ? 'adm-badge-on' : 'adm-badge-off'}`}>
+                    {row.isActive ? '공개' : '비공개'}
                   </span>
                 </div>
                 <p className="adm-list-meta">
-                  {row.category || '분류 없음'} · 태그 {tagsToText(row.tags) || '-'} · 정렬 {row.sort_order}
+                  {row.category || '분류 없음'} · 태그 {tagsToText(row.tags) || '-'} · 정렬 {row.sortOrder}
                 </p>
                 <div className="adm-list-actions">
                   <button type="button" className="btn btn-ghost-navy" onClick={() => openEditForm(row)}>

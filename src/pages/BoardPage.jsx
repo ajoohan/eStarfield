@@ -47,9 +47,9 @@ export default function BoardPage({ board }) {
                 </tr>
               </thead>
               <tbody>
-                {posts.map((p) => (
+                {posts.map((p, idx) => (
                   <tr key={p.id}>
-                    <td className="bd-col-no">{p.id}</td>
+                    <td className="bd-col-no">{posts.length - idx}</td>
                     <td className="bd-col-cat">{p.category || '-'}</td>
                     <td className="bd-col-title">
                       <Link to={`/${board}/${p.id}`}>{p.title}</Link>

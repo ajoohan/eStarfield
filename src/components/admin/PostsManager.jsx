@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { supabase } from '../../lib/supabase.js'
+import { remove as removeFile } from 'aws-amplify/storage'
+import { adminClient } from '../../lib/amplifyClient.js'
+import { uploadPublicFile } from '../../lib/storage.js'
 import { boardsMeta } from '../../data.js'
 import { formatPostDate } from '../../lib/postsApi.js'
 
@@ -10,26 +12,34 @@ const emptyForm = {
   phone: '031-793-9500',
   duration: '',
   fee: '',
-  how_to_apply: '',
-  required_docs: '',
+  howToApply: '',
+  requiredDocs: '',
   steps: '',
-  related_law: '',
-  etc_note: '',
+  relatedLaw: '',
+  etcNote: '',
   content: '',
-  is_active: true,
+  isActive: true,
 }
 
 const TEXTAREAS = [
-  ['how_to_apply', '신청/접수방법'],
-  ['required_docs', '구비서류'],
+  ['howToApply', '신청/접수방법'],
+  ['requiredDocs', '구비서류'],
   ['steps', '처리절차'],
-  ['related_law', '관계법령'],
-  ['etc_note', '기타사항'],
+  ['relatedLaw', '관계법령'],
+  ['etcNote', '기타사항'],
 ]
 
-function fileKeyFor(name) {
-  const ext = (name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin'
-  return `posts/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`
+function parseAttachments(raw) {
+  if (Array.isArray(raw)) return raw
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw)
+      return Array.isArray(parsed) ? parsed : []
+    } catch {
+      return []
+    }
+  }
+  return []
 }
 
 export default function PostsManager({ board }) {
@@ -40,25 +50,27 @@ export default function PostsManager({ board }) {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [attachments, setAttachments] = useState([]) // 유지되는 기존 첨부 [{name,path,size}]
-  const [originalPaths, setOriginalPaths] = useState([]) // 수정 시작 시점의 첨부 경로들
-  const [newFiles, setNewFiles] = useState([]) // 새로 추가할 File[]
+  const [originalPaths, setOriginalPaths] = useState([])
+  const [newFiles, setNewFiles] = useState([])
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef(null)
 
-  async function loadPosts(targetBoard = board) {
+  async function loadPosts() {
     setLoading(true)
     setError('')
     try {
-      const { data, error: fetchError } = await supabase
-        .from('posts')
-        .select('*')
-        .eq('board', targetBoard)
-        .order('id', { ascending: false })
-      if (fetchError) {
-        setError(fetchError.message || '게시물 목록을 불러오지 못했습니다.')
+      const { data, errors } = await adminClient.models.Post.list({
+        filter: { board: { eq: board } },
+        limit: 500,
+      })
+      if (errors?.length) {
+        setError(errors[0]?.message || '게시물 목록을 불러오지 못했습니다.')
         setPosts([])
       } else {
-        setPosts(data || [])
+        const rows = (data || [])
+          .map((r) => ({ ...r, attachments: parseAttachments(r.attachments) }))
+          .sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt))
+        setPosts(rows)
       }
     } catch (err) {
       setError(err?.message || '게시물 목록을 불러오는 중 오류가 발생했습니다.')
@@ -69,7 +81,7 @@ export default function PostsManager({ board }) {
   }
 
   useEffect(() => {
-    loadPosts(board)
+    loadPosts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board])
 
@@ -97,15 +109,15 @@ export default function PostsManager({ board }) {
       phone: row.phone || '',
       duration: row.duration || '',
       fee: row.fee || '',
-      how_to_apply: row.how_to_apply || '',
-      required_docs: row.required_docs || '',
+      howToApply: row.howToApply || '',
+      requiredDocs: row.requiredDocs || '',
       steps: row.steps || '',
-      related_law: row.related_law || '',
-      etc_note: row.etc_note || '',
+      relatedLaw: row.relatedLaw || '',
+      etcNote: row.etcNote || '',
       content: row.content || '',
-      is_active: row.is_active ?? true,
+      isActive: row.isActive ?? true,
     })
-    const existing = row.attachments || []
+    const existing = parseAttachments(row.attachments)
     setAttachments(existing)
     setOriginalPaths(existing.map((f) => f.path))
     setNewFiles([])
@@ -134,42 +146,39 @@ export default function PostsManager({ board }) {
     setSaving(true)
     setError('')
     try {
-      // 1) 새 파일 업로드
+      // 1) 새 파일 업로드 (S3)
       const uploaded = []
       for (const f of newFiles) {
-        const key = fileKeyFor(f.name)
-        const { error: upErr } = await supabase.storage.from('post-files').upload(key, f)
-        if (upErr) {
-          setError(`첨부파일 업로드 실패 (${f.name}): ${upErr.message}`)
-          return
-        }
-        uploaded.push({ name: f.name, path: key, size: f.size })
+        uploaded.push(await uploadPublicFile(f, 'posts'))
       }
 
       const finalAttachments = [...attachments, ...uploaded]
       const payload = {
         board,
         ...form,
-        attachments: finalAttachments,
-        updated_at: new Date().toISOString(),
+        attachments: JSON.stringify(finalAttachments),
       }
 
       let result
       if (editingId) {
-        result = await supabase.from('posts').update(payload).eq('id', editingId)
+        result = await adminClient.models.Post.update({ id: editingId, ...payload })
       } else {
-        result = await supabase.from('posts').insert(payload)
+        result = await adminClient.models.Post.create(payload)
       }
-      if (result.error) {
-        setError(result.error.message || '저장에 실패했습니다.')
+      if (result.errors?.length) {
+        setError(result.errors[0]?.message || '저장에 실패했습니다.')
         return
       }
 
-      // 2) 수정에서 제거된 기존 첨부는 스토리지에서도 삭제(베스트 에포트)
+      // 2) 수정에서 제거된 기존 첨부는 S3에서도 삭제(베스트 에포트)
       const keptPaths = new Set(finalAttachments.map((f) => f.path))
       const removedPaths = originalPaths.filter((p) => !keptPaths.has(p))
-      if (removedPaths.length) {
-        await supabase.storage.from('post-files').remove(removedPaths)
+      for (const p of removedPaths) {
+        try {
+          await removeFile({ path: p })
+        } catch {
+          // 무시
+        }
       }
 
       closeForm()
@@ -185,13 +194,18 @@ export default function PostsManager({ board }) {
     if (!confirm(`"${row.title}" 게시물을 삭제하시겠습니까?`)) return
     setError('')
     try {
-      const { error: deleteError } = await supabase.from('posts').delete().eq('id', row.id)
-      if (deleteError) {
-        setError(deleteError.message || '삭제에 실패했습니다.')
+      const { errors } = await adminClient.models.Post.delete({ id: row.id })
+      if (errors?.length) {
+        setError(errors[0]?.message || '삭제에 실패했습니다.')
         return
       }
-      const paths = (row.attachments || []).map((f) => f.path)
-      if (paths.length) await supabase.storage.from('post-files').remove(paths)
+      for (const f of parseAttachments(row.attachments)) {
+        try {
+          await removeFile({ path: f.path })
+        } catch {
+          // 무시
+        }
+      }
       await loadPosts()
     } catch (err) {
       setError(err?.message || '삭제 중 오류가 발생했습니다.')
@@ -271,7 +285,7 @@ export default function PostsManager({ board }) {
           </div>
 
           <label className="adm-field adm-check">
-            <input type="checkbox" checked={form.is_active} onChange={(e) => updateField('is_active', e.target.checked)} />
+            <input type="checkbox" checked={form.isActive} onChange={(e) => updateField('isActive', e.target.checked)} />
             활성화(공개)
           </label>
 
@@ -289,20 +303,20 @@ export default function PostsManager({ board }) {
       {loading ? (
         <p className="adm-loading">불러오는 중…</p>
       ) : posts.length === 0 ? (
-        <p className="adm-empty">등록된 게시물이 없습니다. (Supabase에 schema.sql을 실행했는지 확인하세요)</p>
+        <p className="adm-empty">등록된 게시물이 없습니다.</p>
       ) : (
         <ul className="adm-list">
           {posts.map((row) => (
             <li key={row.id} className="adm-list-item">
               <div className="adm-list-main">
                 <strong>{row.title}</strong>
-                <span className={`adm-badge ${row.is_active ? 'adm-badge-on' : 'adm-badge-off'}`}>
-                  {row.is_active ? '공개' : '비공개'}
+                <span className={`adm-badge ${row.isActive ? 'adm-badge-on' : 'adm-badge-off'}`}>
+                  {row.isActive ? '공개' : '비공개'}
                 </span>
               </div>
               <p className="adm-list-meta">
                 {boardsMeta[board].label} · {row.category || '분야 없음'} · 조회 {row.views ?? 0} · 첨부{' '}
-                {(row.attachments || []).length}건 · {formatPostDate(row.updated_at || row.created_at)}
+                {(row.attachments || []).length}건 · {formatPostDate(row.updatedAt || row.createdAt)}
               </p>
               <div className="adm-list-actions">
                 <button type="button" className="btn btn-ghost-navy" onClick={() => openEditForm(row)}>

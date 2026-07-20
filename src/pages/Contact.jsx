@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { company } from '../data.js'
 import SectionTitle from '../components/SectionTitle.jsx'
-import { supabase, supabaseReady } from '../lib/supabase.js'
+import { publicClient, amplifyReady } from '../lib/amplifyClient.js'
 
 export default function Contact() {
   const [sent, setSent] = useState(false)
@@ -15,14 +15,14 @@ export default function Contact() {
     setSubmitting(true)
     setError(false)
     try {
-      if (!supabaseReady) throw new Error('Supabase not configured')
-      const { error: insertError } = await supabase.from('inquiries').insert({
+      if (!amplifyReady) throw new Error('Backend not configured')
+      const { errors } = await publicClient.models.Inquiry.create({
         name: form.name,
         phone: form.phone,
         kind: form.kind,
         message: form.message,
       })
-      if (insertError) throw insertError
+      if (errors?.length) throw new Error(errors[0]?.message || 'create failed')
       setSent(true)
     } catch (err) {
       console.error('[contact] inquiry submit failed', err)

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { boardsMeta } from '../data.js'
-import { fetchPost, fetchPosts, incrementPostViews, postFileUrl, formatPostDate } from '../lib/postsApi.js'
+import { fetchPost, fetchPosts, incrementPostViews, formatPostDate } from '../lib/postsApi.js'
+import { resolveFileUrl } from '../lib/storage.js'
 
 const FIELD_ROWS = [
   ['department', '담당부서'],
@@ -26,7 +27,17 @@ export default function PostDetail({ board }) {
   useEffect(() => {
     let mounted = true
     setLoading(true)
-    Promise.all([fetchPost(board, id), fetchPosts(board)]).then(([{ post: row, fallback }, { posts: list }]) => {
+    Promise.all([fetchPost(board, id), fetchPosts(board)]).then(async ([{ post: row, fallback }, { posts: list }]) => {
+      if (!mounted) return
+      // 첨부파일 S3 경로 → 다운로드 URL 해석
+      if (row && Array.isArray(row.attachments) && row.attachments.length) {
+        row = {
+          ...row,
+          attachments: await Promise.all(
+            row.attachments.map(async (f) => ({ ...f, url: await resolveFileUrl(f.path) })),
+          ),
+        }
+      }
       if (!mounted) return
       setPost(row)
       setIsFallback(fallback)
@@ -92,10 +103,10 @@ export default function PostDetail({ board }) {
               <ul className="pd-files">
                 {attachments.map((f) => (
                   <li key={f.path}>
-                    <a className="pd-file-name" href={postFileUrl(f.path, f.name)}>
+                    <a className="pd-file-name" href={f.url || '#'} download={f.name}>
                       📄 {f.name} <span className="pd-dl">⤓</span>
                     </a>
-                    <a className="pd-file-preview" href={postFileUrl(f.path)} target="_blank" rel="noreferrer">
+                    <a className="pd-file-preview" href={f.url || '#'} target="_blank" rel="noreferrer">
                       미리보기 🔍
                     </a>
                   </li>

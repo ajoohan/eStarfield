@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
-import { supabase, supabaseReady } from '../lib/supabase.js'
+import { getCurrentUser, signOut } from 'aws-amplify/auth'
+import { Hub } from 'aws-amplify/utils'
+import { amplifyReady } from '../lib/amplifyClient.js'
 import AdminLogin from '../components/admin/AdminLogin.jsx'
 import ListingsManager from '../components/admin/ListingsManager.jsx'
 import InquiriesManager from '../components/admin/InquiriesManager.jsx'
 import PostsManager from '../components/admin/PostsManager.jsx'
 import ComplexesManager from '../components/admin/ComplexesManager.jsx'
 
-const ADMIN_VERSION = 'Version 0.9'
-const ADMIN_VERSION_DATE = '2026.07.14'
+const ADMIN_VERSION = 'Version 1.0'
+const ADMIN_VERSION_DATE = '2026.07.16'
 
 const ADMIN_MENU = [
   { group: '컨텐츠 관리', items: [['complexes', '주변단지소개'], ['listings', '매물정보']] },
@@ -22,43 +24,47 @@ export default function Admin() {
   const [signingOut, setSigningOut] = useState(false)
 
   useEffect(() => {
-    if (!supabaseReady) {
+    if (!amplifyReady) {
       setCheckingSession(false)
       return undefined
     }
 
     let mounted = true
 
-    supabase.auth
-      .getSession()
-      .then(({ data }) => {
+    getCurrentUser()
+      .then((user) => {
         if (mounted) {
-          setSession(data?.session ?? null)
+          setSession(user)
           setCheckingSession(false)
         }
       })
       .catch(() => {
-        if (mounted) setCheckingSession(false)
+        if (mounted) {
+          setSession(null)
+          setCheckingSession(false)
+        }
       })
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession)
+    const unsubscribe = Hub.listen('auth', ({ payload }) => {
+      if (payload.event === 'signedIn') {
+        getCurrentUser()
+          .then((user) => mounted && setSession(user))
+          .catch(() => mounted && setSession(null))
+      } else if (payload.event === 'signedOut') {
+        if (mounted) setSession(null)
+      }
     })
 
     return () => {
       mounted = false
-      subscription?.subscription?.unsubscribe()
+      unsubscribe()
     }
   }, [])
 
   async function handleSignOut() {
     setSigningOut(true)
     try {
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        // eslint-disable-next-line no-console
-        console.error('[admin] 로그아웃 중 오류:', error.message || error)
-      }
+      await signOut()
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('[admin] 로그아웃 중 오류:', e?.message || e)
@@ -67,14 +73,14 @@ export default function Admin() {
     }
   }
 
-  if (!supabaseReady) {
+  if (!amplifyReady) {
     return (
       <div className="adm-shell">
         <div className="adm-config-error">
           <h1>관리자 페이지를 사용할 수 없습니다</h1>
           <p>
-            Supabase 환경변수(<code>VITE_SUPABASE_URL</code>, <code>VITE_SUPABASE_ANON_KEY</code>)가
-            설정되지 않았습니다. <code>.env</code> 파일을 확인해 주세요.
+            백엔드 설정 파일(<code>amplify_outputs.json</code>)이 없습니다. 배포 환경에서는 자동
+            생성되며, 로컬에서는 Amplify 콘솔에서 다운로드해 프로젝트 루트에 두세요.
           </p>
         </div>
       </div>

@@ -1,22 +1,60 @@
-import { supabase, supabaseReady } from './supabase.js'
+import { publicClient, amplifyReady } from './amplifyClient.js'
 import { fallbackPosts } from '../data.js'
 
 function fallbackList(board) {
   return fallbackPosts.filter((p) => p.board === board)
 }
 
-// 게시판 목록 (활성 게시물, 최신순)
+function parseAttachments(raw) {
+  if (Array.isArray(raw)) return raw
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw)
+      return Array.isArray(parsed) ? parsed : []
+    } catch {
+      return []
+    }
+  }
+  return []
+}
+
+// DynamoDB 모델 → 기존 UI 형태(snake_case 필드명 유지)로 매핑
+function mapRow(r) {
+  return {
+    id: r.id,
+    board: r.board,
+    category: r.category || '',
+    title: r.title,
+    department: r.department || '',
+    phone: r.phone || '',
+    duration: r.duration || '',
+    fee: r.fee || '',
+    how_to_apply: r.howToApply || '',
+    required_docs: r.requiredDocs || '',
+    steps: r.steps || '',
+    related_law: r.relatedLaw || '',
+    etc_note: r.etcNote || '',
+    content: r.content || '',
+    attachments: parseAttachments(r.attachments),
+    views: r.views ?? 0,
+    created_at: r.createdAt,
+    updated_at: r.updatedAt,
+  }
+}
+
+// 게시판 목록 (활성, 최신순)
 export async function fetchPosts(board) {
-  if (!supabaseReady) return { posts: fallbackList(board), fallback: true }
+  if (!amplifyReady) return { posts: fallbackList(board), fallback: true }
   try {
-    const { data, error } = await supabase
-      .from('posts')
-      .select('id, board, category, title, department, attachments, views, created_at, updated_at')
-      .eq('board', board)
-      .eq('is_active', true)
-      .order('id', { ascending: false })
-    if (error) throw error
-    return { posts: data || [], fallback: false }
+    const { data, errors } = await publicClient.models.Post.list({
+      filter: { board: { eq: board }, isActive: { eq: true } },
+      limit: 500,
+    })
+    if (errors?.length) throw new Error(errors[0]?.message || 'list failed')
+    const rows = (data || [])
+      .map(mapRow)
+      .sort((x, y) => new Date(y.created_at) - new Date(x.created_at))
+    return { posts: rows, fallback: false }
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('[postsApi] 게시물 목록을 불러오지 못해 기본 안내로 대체합니다.', err)
@@ -27,17 +65,13 @@ export async function fetchPosts(board) {
 // 게시물 상세
 export async function fetchPost(board, id) {
   const fromFallback = () => fallbackList(board).find((p) => String(p.id) === String(id)) || null
-  if (!supabaseReady) return { post: fromFallback(), fallback: true }
+  if (!amplifyReady) return { post: fromFallback(), fallback: true }
   try {
-    const { data, error } = await supabase
-      .from('posts')
-      .select('*')
-      .eq('board', board)
-      .eq('id', id)
-      .eq('is_active', true)
-      .single()
-    if (error) throw error
-    return { post: data, fallback: false }
+    const { data, errors } = await publicClient.models.Post.get({ id })
+    if (errors?.length || !data || data.board !== board || data.isActive === false) {
+      throw new Error(errors?.[0]?.message || 'not found')
+    }
+    return { post: mapRow(data), fallback: false }
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('[postsApi] 게시물을 불러오지 못해 기본 안내로 대체합니다.', err)
@@ -45,25 +79,15 @@ export async function fetchPost(board, id) {
   }
 }
 
-// 조회수 증가 (실패해도 무시)
+// 조회수 증가 (실패 무시)
 export function incrementPostViews(id) {
-  if (!supabaseReady) return
-  supabase
-    .rpc('increment_post_views', { pid: id })
-    .then(({ error }) => {
-      if (error) {
-        // eslint-disable-next-line no-console
-        console.warn('[postsApi] 조회수 증가 실패:', error.message)
-      }
+  if (!amplifyReady) return
+  publicClient.mutations
+    .incrementPostViews({ id })
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.warn('[postsApi] 조회수 증가 실패:', err?.message)
     })
-}
-
-// 첨부파일 공개 URL (download=true 시 다운로드 URL)
-export function postFileUrl(path, downloadName) {
-  const { data } = supabase.storage
-    .from('post-files')
-    .getPublicUrl(path, downloadName ? { download: downloadName } : undefined)
-  return data?.publicUrl || ''
 }
 
 // YYYY.MM.DD

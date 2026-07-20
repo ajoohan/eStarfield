@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabase.js'
+import { adminClient } from '../../lib/amplifyClient.js'
 
 function formatDate(value) {
   if (!value) return '-'
@@ -39,15 +39,15 @@ export default function InquiriesManager() {
     setLoading(true)
     setError('')
     try {
-      const { data, error: fetchError } = await supabase
-        .from('inquiries')
-        .select('*')
-        .order('created_at', { ascending: false })
-      if (fetchError) {
-        setError(fetchError.message || '문의 목록을 불러오지 못했습니다.')
+      const { data, errors } = await adminClient.models.Inquiry.list({ limit: 500 })
+      if (errors?.length) {
+        setError(errors[0]?.message || '문의 목록을 불러오지 못했습니다.')
         setInquiries([])
       } else {
-        setInquiries(data || [])
+        const rows = (data || [])
+          .map((r) => ({ ...r, created_at: r.createdAt, replied_at: r.repliedAt }))
+          .sort((x, y) => new Date(y.created_at) - new Date(x.created_at))
+        setInquiries(rows)
       }
     } catch (err) {
       setError(err?.message || '문의 목록을 불러오는 중 오류가 발생했습니다.')
@@ -65,12 +65,9 @@ export default function InquiriesManager() {
     setBusyId(row.id)
     setError('')
     try {
-      const { error: updateError } = await supabase
-        .from('inquiries')
-        .update({ handled: !row.handled })
-        .eq('id', row.id)
-      if (updateError) {
-        setError(updateError.message || '상태 변경에 실패했습니다.')
+      const { errors } = await adminClient.models.Inquiry.update({ id: row.id, handled: !row.handled })
+      if (errors?.length) {
+        setError(errors[0]?.message || '상태 변경에 실패했습니다.')
         return
       }
       await loadInquiries()
@@ -86,9 +83,9 @@ export default function InquiriesManager() {
     setBusyId(id)
     setError('')
     try {
-      const { error: deleteError } = await supabase.from('inquiries').delete().eq('id', id)
-      if (deleteError) {
-        setError(deleteError.message || '삭제에 실패했습니다.')
+      const { errors } = await adminClient.models.Inquiry.delete({ id })
+      if (errors?.length) {
+        setError(errors[0]?.message || '삭제에 실패했습니다.')
         return
       }
       await loadInquiries()
@@ -115,12 +112,14 @@ export default function InquiriesManager() {
     setSavingReply(true)
     setError('')
     try {
-      const { error: updateError } = await supabase
-        .from('inquiries')
-        .update({ reply: replyText, replied_at: new Date().toISOString(), handled: true })
-        .eq('id', replyTarget.id)
-      if (updateError) {
-        setError(updateError.message || '회신 저장에 실패했습니다. (DB에 reply 컬럼이 없으면 schema.sql을 다시 실행하세요.)')
+      const { errors } = await adminClient.models.Inquiry.update({
+        id: replyTarget.id,
+        reply: replyText,
+        repliedAt: new Date().toISOString(),
+        handled: true,
+      })
+      if (errors?.length) {
+        setError(errors[0]?.message || '회신 저장에 실패했습니다.')
         return
       }
       closeReply()

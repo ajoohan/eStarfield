@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabase.js'
-import { uploadPublicImage } from '../../lib/storage.js'
+import { adminClient } from '../../lib/amplifyClient.js'
+import { uploadPublicImage, resolveFileUrl } from '../../lib/storage.js'
 import { propertyTypes, dealTypes } from '../../data.js'
 
 const emptyForm = {
   title: '',
-  type_key: propertyTypes[0].key,
-  deal_key: dealTypes[0].key,
+  typeKey: propertyTypes[0].key,
+  dealKey: dealTypes[0].key,
   area: '',
   price: '',
   deposit: '',
@@ -14,8 +14,8 @@ const emptyForm = {
   location: '',
   floor: '',
   description: '',
-  is_active: true,
-  sort_order: 0,
+  isActive: true,
+  sortOrder: 0,
 }
 
 function typeLabel(key) {
@@ -33,22 +33,25 @@ export default function ListingsManager() {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
-  const [imageUrl, setImageUrl] = useState('') // 저장된 대표 이미지 URL
-  const [imageFile, setImageFile] = useState(null) // 새로 선택한 파일
+  const [imageRaw, setImageRaw] = useState('') // 저장돼 있는 원래 값(S3 경로 등)
+  const [imageUrl, setImageUrl] = useState('') // 미리보기용 URL
+  const [imageFile, setImageFile] = useState(null)
 
   async function loadListings() {
     setLoading(true)
     setError('')
     try {
-      const { data, error: fetchError } = await supabase
-        .from('listings')
-        .select('*')
-        .order('sort_order', { ascending: true })
-      if (fetchError) {
-        setError(fetchError.message || '매물 목록을 불러오지 못했습니다.')
+      const { data, errors } = await adminClient.models.Listing.list({ limit: 500 })
+      if (errors?.length) {
+        setError(errors[0]?.message || '매물 목록을 불러오지 못했습니다.')
         setListings([])
       } else {
-        setListings(data || [])
+        const rows = await Promise.all(
+          [...(data || [])]
+            .sort((x, y) => (x.sortOrder ?? 0) - (y.sortOrder ?? 0))
+            .map(async (r) => ({ ...r, thumbUrl: await resolveFileUrl(r.thumb || '') })),
+        )
+        setListings(rows)
       }
     } catch (err) {
       setError(err?.message || '매물 목록을 불러오는 중 오류가 발생했습니다.')
@@ -65,6 +68,7 @@ export default function ListingsManager() {
   function openNewForm() {
     setEditingId(null)
     setForm(emptyForm)
+    setImageRaw('')
     setImageUrl('')
     setImageFile(null)
     setShowForm(true)
@@ -75,8 +79,8 @@ export default function ListingsManager() {
     setEditingId(row.id)
     setForm({
       title: row.title || '',
-      type_key: row.type_key || propertyTypes[0].key,
-      deal_key: row.deal_key || dealTypes[0].key,
+      typeKey: row.typeKey || propertyTypes[0].key,
+      dealKey: row.dealKey || dealTypes[0].key,
       area: row.area || '',
       price: row.price || '',
       deposit: row.deposit || '',
@@ -84,10 +88,11 @@ export default function ListingsManager() {
       location: row.location || '',
       floor: row.floor || '',
       description: row.description || '',
-      is_active: row.is_active ?? true,
-      sort_order: row.sort_order ?? 0,
+      isActive: row.isActive ?? true,
+      sortOrder: row.sortOrder ?? 0,
     })
-    setImageUrl(row.thumb || '')
+    setImageRaw(row.thumb || '')
+    setImageUrl(row.thumbUrl || row.thumb || '')
     setImageFile(null)
     setShowForm(true)
     setError('')
@@ -97,6 +102,7 @@ export default function ListingsManager() {
     setShowForm(false)
     setEditingId(null)
     setForm(emptyForm)
+    setImageRaw('')
     setImageUrl('')
     setImageFile(null)
   }
@@ -110,7 +116,7 @@ export default function ListingsManager() {
     setSaving(true)
     setError('')
     try {
-      let thumb = imageUrl
+      let thumb = imageRaw
       if (imageFile) {
         thumb = await uploadPublicImage(imageFile, 'listings')
       }
@@ -118,8 +124,8 @@ export default function ListingsManager() {
       const payload = {
         thumb,
         title: form.title,
-        type_key: form.type_key,
-        deal_key: form.deal_key,
+        typeKey: form.typeKey,
+        dealKey: form.dealKey,
         area: form.area,
         price: form.price,
         deposit: form.deposit,
@@ -127,19 +133,18 @@ export default function ListingsManager() {
         location: form.location,
         floor: form.floor,
         description: form.description,
-        is_active: form.is_active,
-        sort_order: Number(form.sort_order) || 0,
+        isActive: form.isActive,
+        sortOrder: Number(form.sortOrder) || 0,
       }
 
       let result
       if (editingId) {
-        result = await supabase.from('listings').update(payload).eq('id', editingId)
+        result = await adminClient.models.Listing.update({ id: editingId, ...payload })
       } else {
-        result = await supabase.from('listings').insert(payload)
+        result = await adminClient.models.Listing.create(payload)
       }
-
-      if (result.error) {
-        setError(result.error.message || '저장에 실패했습니다.')
+      if (result.errors?.length) {
+        setError(result.errors[0]?.message || '저장에 실패했습니다.')
         return
       }
 
@@ -156,9 +161,9 @@ export default function ListingsManager() {
     if (!confirm('이 매물을 삭제하시겠습니까?')) return
     setError('')
     try {
-      const { error: deleteError } = await supabase.from('listings').delete().eq('id', id)
-      if (deleteError) {
-        setError(deleteError.message || '삭제에 실패했습니다.')
+      const { errors } = await adminClient.models.Listing.delete({ id })
+      if (errors?.length) {
+        setError(errors[0]?.message || '삭제에 실패했습니다.')
         return
       }
       await loadListings()
@@ -193,7 +198,7 @@ export default function ListingsManager() {
             </label>
             <label className="adm-field">
               유형
-              <select value={form.type_key} onChange={(e) => updateField('type_key', e.target.value)}>
+              <select value={form.typeKey} onChange={(e) => updateField('typeKey', e.target.value)}>
                 {propertyTypes.map((t) => (
                   <option key={t.key} value={t.key}>{t.label}</option>
                 ))}
@@ -201,7 +206,7 @@ export default function ListingsManager() {
             </label>
             <label className="adm-field">
               거래유형
-              <select value={form.deal_key} onChange={(e) => updateField('deal_key', e.target.value)}>
+              <select value={form.dealKey} onChange={(e) => updateField('dealKey', e.target.value)}>
                 {dealTypes.map((d) => (
                   <option key={d.key} value={d.key}>{d.label}</option>
                 ))}
@@ -235,15 +240,15 @@ export default function ListingsManager() {
               정렬순서
               <input
                 type="number"
-                value={form.sort_order}
-                onChange={(e) => updateField('sort_order', e.target.value)}
+                value={form.sortOrder}
+                onChange={(e) => updateField('sortOrder', e.target.value)}
               />
             </label>
             <label className="adm-field adm-check">
               <input
                 type="checkbox"
-                checked={form.is_active}
-                onChange={(e) => updateField('is_active', e.target.checked)}
+                checked={form.isActive}
+                onChange={(e) => updateField('isActive', e.target.checked)}
               />
               활성화(공개)
             </label>
@@ -274,6 +279,7 @@ export default function ListingsManager() {
                   onClick={() => {
                     setImageFile(null)
                     setImageUrl('')
+                    setImageRaw('')
                   }}
                 >
                   이미지 제거
@@ -301,17 +307,17 @@ export default function ListingsManager() {
           {listings.map((row) => (
             <li key={row.id} className="adm-list-item adm-thumb-item">
               <div className="adm-thumb">
-                {row.thumb ? <img src={row.thumb} alt="" /> : <span>NO IMAGE</span>}
+                {row.thumbUrl ? <img src={row.thumbUrl} alt="" /> : <span>NO IMAGE</span>}
               </div>
               <div className="adm-thumb-body">
                 <div className="adm-list-main">
                   <strong>{row.title}</strong>
-                  <span className={`adm-badge ${row.is_active ? 'adm-badge-on' : 'adm-badge-off'}`}>
-                    {row.is_active ? '공개' : '비공개'}
+                  <span className={`adm-badge ${row.isActive ? 'adm-badge-on' : 'adm-badge-off'}`}>
+                    {row.isActive ? '공개' : '비공개'}
                   </span>
                 </div>
                 <p className="adm-list-meta">
-                  {typeLabel(row.type_key)} · {dealLabel(row.deal_key)} ·{' '}
+                  {typeLabel(row.typeKey)} · {dealLabel(row.dealKey)} ·{' '}
                   {row.price || row.deposit || row.monthly || '-'} · {row.location}
                 </p>
                 <div className="adm-list-actions">
