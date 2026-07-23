@@ -69,6 +69,7 @@ const schema = a.schema({
     .model({
       name: a.string().required(),
       phone: a.string().required(),
+      email: a.string(),
       kind: a.string(),
       message: a.string(),
       handled: a.boolean().default(false),

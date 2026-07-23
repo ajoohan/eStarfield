@@ -164,6 +164,7 @@ export default function InquiriesManager() {
                   <td>{row.name}</td>
                   <td>
                     <a href={telHref(row.phone)}>{row.phone}</a>
+                    {row.email ? <span className="adm-email">{row.email}</span> : null}
                   </td>
                   <td>{row.kind}</td>
                   <td className="adm-table-msg">
@@ -231,6 +232,10 @@ export default function InquiriesManager() {
                 {replyTarget.phone}
               </li>
               <li>
+                <span>이메일</span>
+                {replyTarget.email || '-'}
+              </li>
+              <li>
                 <span>유형</span>
                 {replyTarget.kind || '-'}
               </li>
@@ -259,8 +264,8 @@ export default function InquiriesManager() {
               </button>
             </div>
             <p className="demo-note">
-              ‘문자로 보내기’는 휴대폰의 문자 앱을 열어 회신 내용을 자동 입력합니다(휴대폰에서 실제 발송).
-              ‘회신 저장’은 회신 내용을 기록하고 처리완료로 표시합니다.
+              <strong>‘회신 저장’을 누르면 문의자의 이메일로 답변 메일이 자동 발송</strong>되고 처리완료로
+              표시됩니다. ‘문자로 보내기’는 휴대폰의 문자 앱을 열어 회신 내용을 자동 입력합니다.
             </p>
           </div>
         </div>

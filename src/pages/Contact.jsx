@@ -7,7 +7,7 @@ export default function Contact() {
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(false)
-  const [form, setForm] = useState({ name: '', phone: '', kind: '매물 문의', message: '' })
+  const [form, setForm] = useState({ name: '', phone: '', email: '', kind: '매물 문의', message: '' })
   const change = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
   const submit = async (e) => {
@@ -19,6 +19,7 @@ export default function Contact() {
       const { errors } = await publicClient.models.Inquiry.create({
         name: form.name,
         phone: form.phone,
+        email: form.email,
         kind: form.kind,
         message: form.message,
       })
@@ -58,6 +59,7 @@ export default function Contact() {
             <form onSubmit={submit}>
               <label>이름<input name="name" value={form.name} onChange={change} required /></label>
               <label>연락처<input name="phone" value={form.phone} onChange={change} required placeholder="010-0000-0000" /></label>
+              <label>이메일<input type="email" name="email" value={form.email} onChange={change} required placeholder="답변을 받으실 이메일 주소" /></label>
               <label>문의유형
                 <select name="kind" value={form.kind} onChange={change}>
                   <option>매물 문의</option><option>매물 내놓기</option><option>기타 상담</option>

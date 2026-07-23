@@ -453,3 +453,4 @@ img { max-width: 100%; display: block; }
 .modal-photo img { width: 100%; height: 210px; object-fit: cover; display: block; }
 .cx-photo { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 18px; }
 .cx-photo img { width: 100%; height: 160px; object-fit: cover; display: block; }
+.adm-email { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
