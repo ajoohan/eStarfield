@@ -8,8 +8,8 @@ import InquiriesManager from '../components/admin/InquiriesManager.jsx'
 import PostsManager from '../components/admin/PostsManager.jsx'
 import ComplexesManager from '../components/admin/ComplexesManager.jsx'
 
-const ADMIN_VERSION = 'Version 1.0'
-const ADMIN_VERSION_DATE = '2026.07.16'
+const ADMIN_VERSION = 'Version 1.1'
+const ADMIN_VERSION_DATE = '2026.07.20'
 
 const ADMIN_MENU = [
   { group: '컨텐츠 관리', items: [['complexes', '주변단지소개'], ['listings', '매물정보']] },

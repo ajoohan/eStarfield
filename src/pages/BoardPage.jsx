@@ -43,7 +43,6 @@ export default function BoardPage({ board }) {
                   <th className="bd-col-file">서식파일</th>
                   <th className="bd-col-date">최종수정일</th>
                   <th className="bd-col-views">조회수</th>
-                  <th className="bd-col-dept">담당부서</th>
                 </tr>
               </thead>
               <tbody>
@@ -63,7 +62,6 @@ export default function BoardPage({ board }) {
                     </td>
                     <td className="bd-col-date">{formatPostDate(p.updated_at || p.created_at)}</td>
                     <td className="bd-col-views">{p.views ?? 0}</td>
-                    <td className="bd-col-dept">{p.department || '-'}</td>
                   </tr>
                 ))}
               </tbody>

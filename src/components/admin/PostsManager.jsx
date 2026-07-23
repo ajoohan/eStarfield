@@ -8,26 +8,9 @@ import { formatPostDate } from '../../lib/postsApi.js'
 const emptyForm = {
   category: '',
   title: '',
-  department: 'e스타필드 공인중개사사무소',
-  phone: '031-793-9500',
-  duration: '',
-  fee: '',
-  howToApply: '',
-  requiredDocs: '',
-  steps: '',
-  relatedLaw: '',
-  etcNote: '',
   content: '',
   isActive: true,
 }
-
-const TEXTAREAS = [
-  ['howToApply', '신청/접수방법'],
-  ['requiredDocs', '구비서류'],
-  ['steps', '처리절차'],
-  ['relatedLaw', '관계법령'],
-  ['etcNote', '기타사항'],
-]
 
 function parseAttachments(raw) {
   if (Array.isArray(raw)) return raw
@@ -105,15 +88,6 @@ export default function PostsManager({ board }) {
     setForm({
       category: row.category || '',
       title: row.title || '',
-      department: row.department || '',
-      phone: row.phone || '',
-      duration: row.duration || '',
-      fee: row.fee || '',
-      howToApply: row.howToApply || '',
-      requiredDocs: row.requiredDocs || '',
-      steps: row.steps || '',
-      relatedLaw: row.relatedLaw || '',
-      etcNote: row.etcNote || '',
       content: row.content || '',
       isActive: row.isActive ?? true,
     })
@@ -235,34 +209,11 @@ export default function PostsManager({ board }) {
               제목 *
               <input type="text" value={form.title} onChange={(e) => updateField('title', e.target.value)} required />
             </label>
-            <label className="adm-field">
-              담당부서
-              <input type="text" value={form.department} onChange={(e) => updateField('department', e.target.value)} />
-            </label>
-            <label className="adm-field">
-              전화번호
-              <input type="text" value={form.phone} onChange={(e) => updateField('phone', e.target.value)} />
-            </label>
-            <label className="adm-field">
-              처리기간
-              <input type="text" value={form.duration} onChange={(e) => updateField('duration', e.target.value)} />
-            </label>
-            <label className="adm-field">
-              수수료
-              <input type="text" value={form.fee} onChange={(e) => updateField('fee', e.target.value)} />
-            </label>
           </div>
-
-          {TEXTAREAS.map(([key, label]) => (
-            <label key={key} className="adm-field">
-              {label}
-              <textarea rows={2} value={form[key]} onChange={(e) => updateField(key, e.target.value)} />
-            </label>
-          ))}
 
           <label className="adm-field">
             본문 내용
-            <textarea rows={5} value={form.content} onChange={(e) => updateField('content', e.target.value)} />
+            <textarea rows={7} value={form.content} onChange={(e) => updateField('content', e.target.value)} />
           </label>
 
           <div className="adm-field">

@@ -4,18 +4,6 @@ import { boardsMeta } from '../data.js'
 import { fetchPost, fetchPosts, incrementPostViews, formatPostDate } from '../lib/postsApi.js'
 import { resolveFileUrl } from '../lib/storage.js'
 
-const FIELD_ROWS = [
-  ['department', '담당부서'],
-  ['phone', '전화번호'],
-  ['duration', '처리기간'],
-  ['fee', '수수료'],
-  ['how_to_apply', '신청/접수방법'],
-  ['required_docs', '구비서류'],
-  ['steps', '처리절차'],
-  ['related_law', '관계법령'],
-  ['etc_note', '기타사항'],
-]
-
 export default function PostDetail({ board }) {
   const { id } = useParams()
   const meta = boardsMeta[board]
@@ -88,14 +76,6 @@ export default function PostDetail({ board }) {
       )}
 
       <ul className="pd-rows">
-        {FIELD_ROWS.map(([key, label]) =>
-          post[key] ? (
-            <li key={key}>
-              <span className="pd-label">{label}</span>
-              <div className="pd-value">{post[key]}</div>
-            </li>
-          ) : null,
-        )}
         {attachments.length > 0 && (
           <li>
             <span className="pd-label">서식파일</span>
