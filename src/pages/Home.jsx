@@ -7,6 +7,7 @@ import PropertyTypeCards from '../components/PropertyTypeCards.jsx'
 import StepGuide from '../components/StepGuide.jsx'
 import CtaBanner from '../components/CtaBanner.jsx'
 import { dealLabel } from '../lib/format.js'
+import { PhoneIcon } from '../components/icons.jsx'
 
 export default function Home() {
   const [items, setItems] = useState([])
@@ -31,7 +32,7 @@ export default function Home() {
           <h1>딱 맞는 매물,<br /><b>하남 e스타필드</b>가 빠르게 <br className="br-m" />찾아드립니다</h1>
           <p>아파트, 토지, 상가, 사무실까지. 확인된 매물만, 전문가가 안내합니다.</p>
           <div className="hero-actions">
-            <a className="btn btn-gold" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 {company.phone}</a>
+            <a className="btn btn-gold" href={`tel:${company.phone.replace(/-/g, '')}`}><PhoneIcon className="btn-ico" /> {company.phone}</a>
             <Link className="btn btn-navy" to="/listings">매물 보러가기</Link>
           </div>
         </div>

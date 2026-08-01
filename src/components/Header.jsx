@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { company } from '../data.js'
+import { PhoneIcon, MenuIcon } from './icons.jsx'
 
 const menu = [
   { to: '/about', label: '회사소개' },
@@ -30,8 +31,8 @@ export default function Header() {
             </NavLink>
           ))}
         </nav>
-        <a className="hdr-cta" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 {company.phone}</a>
-        <button className="hdr-toggle" aria-label="메뉴" aria-expanded={open} onClick={() => setOpen(!open)}>☰</button>
+        <a className="hdr-cta" href={`tel:${company.phone.replace(/-/g, '')}`}><PhoneIcon className="btn-ico" /> {company.phone}</a>
+        <button className="hdr-toggle" aria-label="메뉴" aria-expanded={open} onClick={() => setOpen(!open)}><MenuIcon open={open} /></button>
       </div>
     </header>
   )

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { company } from '../data.js'
+import { PhoneIcon } from './icons.jsx'
 
 export default function CtaBanner() {
   return (
@@ -10,7 +11,7 @@ export default function CtaBanner() {
           <p>아파트, 토지, 상가, 사무실 조건만 알려주시면 꼭 맞는 매물을 찾아드립니다.</p>
         </div>
         <div className="cta-actions">
-          <a className="btn btn-gold" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 {company.phone}</a>
+          <a className="btn btn-gold" href={`tel:${company.phone.replace(/-/g, '')}`}><PhoneIcon className="btn-ico" /> {company.phone}</a>
           <Link className="btn btn-ghost" to="/contact">온라인 문의</Link>
         </div>
       </div>

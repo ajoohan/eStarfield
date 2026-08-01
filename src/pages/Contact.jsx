@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { company } from '../data.js'
 import SectionTitle from '../components/SectionTitle.jsx'
 import { publicClient, amplifyReady } from '../lib/amplifyClient.js'
+import { ArrowUpRight } from '../components/icons.jsx'
 
 export default function Contact() {
   const [sent, setSent] = useState(false)
@@ -41,13 +42,13 @@ export default function Contact() {
           <h3>연락처</h3>
           <ul>
             <li><span>전화</span><a href={`tel:${company.phone.replace(/-/g, '')}`}>{company.phone}</a></li>
-            <li><span>휴대폰</span>{company.mobiles[0]} / <br className="br-m" />{company.mobiles[1]}</li>
+            <li><span>휴대폰</span><span className="li-val"><a href={`tel:${company.mobiles[0].replace(/-/g, '')}`}>{company.mobiles[0]}</a> / <br className="br-m" /><a href={`tel:${company.mobiles[1].replace(/-/g, '')}`}>{company.mobiles[1]}</a></span></li>
             <li><span>팩스</span>{company.fax}</li>
             <li><span>이메일</span>{company.email}</li>
             <li><span>주소</span>{company.address}</li>
             <li><span>영업시간</span>{company.hours}</li>
           </ul>
-          <a className="map-link" href={`https://map.naver.com/v5/search/${encodeURIComponent(company.address)}`} target="_blank" rel="noreferrer">🗺️ 네이버 지도에서 위치 보기</a>
+          <a className="map-link" href={`https://map.naver.com/v5/search/${encodeURIComponent(company.address)}`} target="_blank" rel="noreferrer">네이버 지도에서 위치 보기 <ArrowUpRight className="map-ico" /></a>
         </div>
         <div className="contact-form">
           {sent ? (
