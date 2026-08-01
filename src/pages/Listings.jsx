@@ -38,7 +38,7 @@ export default function Listings() {
 
   return (
     <div className="page">
-      <SectionTitle eyebrow="LISTINGS" title="매물정보" sub="유형과 거래방식으로 원하는 매물을 찾아보세요." />
+      <SectionTitle eyebrow="LISTINGS" title="매물정보" sub={'유형과 거래방식으로 원하는 매물을\n찾아보세요.'} />
       <ListingFilter type={type} deal={deal} onType={setType} onDeal={setDeal} />
       {loading ? (
         <p className="empty">매물을 불러오는 중입니다…</p>

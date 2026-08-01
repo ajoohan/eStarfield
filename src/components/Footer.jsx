@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container ftr-inner">
         <div className="ftr-brand">
           <strong>{company.name}</strong>
-          <p>{company.region} 상가·사무실·아파트·토지 전문</p>
+          <p>하남 전역 아파트, 토지, 상가, 사무실 전문</p>
         </div>
         <div className="ftr-info">
           <p>대표 {company.ceo} · 중개등록 {company.brokerLicense}</p>

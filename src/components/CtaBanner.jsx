@@ -6,8 +6,8 @@ export default function CtaBanner() {
     <section className="cta-banner">
       <div className="container cta-inner">
         <div>
-          <h3>매물 문의는 전화가 가장 빠릅니다</h3>
-          <p>{company.region} 상가·사무실·아파트·토지, 조건만 알려주시면 맞는 매물을 찾아드립니다.</p>
+          <h3>매물 문의는 전화가 가장 <br className="br-m" />빠릅니다</h3>
+          <p>아파트, 토지, 상가, 사무실 조건만 알려주시면 꼭 맞는 매물을 찾아드립니다.</p>
         </div>
         <div className="cta-actions">
           <a className="btn btn-gold" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 {company.phone}</a>

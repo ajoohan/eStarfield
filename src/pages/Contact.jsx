@@ -41,7 +41,7 @@ export default function Contact() {
           <h3>연락처</h3>
           <ul>
             <li><span>전화</span><a href={`tel:${company.phone.replace(/-/g, '')}`}>{company.phone}</a></li>
-            <li><span>휴대폰</span>{company.mobiles.join(' / ')}</li>
+            <li><span>휴대폰</span>{company.mobiles[0]} / <br className="br-m" />{company.mobiles[1]}</li>
             <li><span>팩스</span>{company.fax}</li>
             <li><span>이메일</span>{company.email}</li>
             <li><span>주소</span>{company.address}</li>

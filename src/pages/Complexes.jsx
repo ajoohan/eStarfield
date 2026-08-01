@@ -55,7 +55,6 @@ export default function Complexes() {
           </div>
         )}
 
-        <p className="cx-note">※ 단지 정보는 예시이며 실제와 다를 수 있습니다. 정확한 단지 정보·시세는 문의 바랍니다.</p>
       </div>
       <CtaBanner />
     </>

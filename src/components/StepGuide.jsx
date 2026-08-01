@@ -1,3 +1,5 @@
+import { mbr } from './Mbr.jsx'
+
 export default function StepGuide({ items }) {
   return (
     <div className="step-grid">
@@ -5,7 +7,7 @@ export default function StepGuide({ items }) {
         <div key={s.no} className="step-card">
           <span className="step-no">{s.no}</span>
           <strong>{s.title}</strong>
-          <p>{s.desc}</p>
+          <p>{mbr(s.desc)}</p>
         </div>
       ))}
     </div>

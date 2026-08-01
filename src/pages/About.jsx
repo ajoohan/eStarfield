@@ -1,16 +1,17 @@
 import { company, greeting } from '../data.js'
 import SectionTitle from '../components/SectionTitle.jsx'
 import CtaBanner from '../components/CtaBanner.jsx'
+import { mbr } from '../components/Mbr.jsx'
 
 export default function About() {
   return (
     <>
       <div className="page">
-        <SectionTitle eyebrow="ABOUT" title="회사소개" sub={`${company.region} 지역 밀착 부동산 파트너`} />
+        <SectionTitle eyebrow="ABOUT" title="회사소개" sub="믿을 수 있는 부동산 파트너" />
 
         <section className="about-greet">
           {greeting.map((p, i) => (
-            <p key={i}>{p}</p>
+            <p key={i}>{mbr(p)}</p>
           ))}
           <p className="about-sign">{company.name}&nbsp;&nbsp;대표 {company.ceo}</p>
         </section>
@@ -23,7 +24,7 @@ export default function About() {
             <li><span>주소</span>{company.address}</li>
             <li><span>대표(공인중개사)</span>{company.ceo}</li>
             <li><span>전화</span><a href={`tel:${company.phone.replace(/-/g, '')}`}>{company.phone}</a></li>
-            <li><span>휴대폰</span>{company.mobiles.join(' / ')}</li>
+            <li><span>휴대폰</span>{company.mobiles[0]} / <br className="br-m" />{company.mobiles[1]}</li>
             <li><span>팩스</span>{company.fax}</li>
             <li><span>이메일</span>{company.email}</li>
             <li><span>등록번호</span>{company.brokerLicense}</li>

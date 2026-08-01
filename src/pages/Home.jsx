@@ -28,8 +28,8 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-inner">
           <span className="hero-eyebrow">하남 미사 · 유니온시티 부동산</span>
-          <h1>딱 맞는 매물,<br /><b>하남 e스타필드</b>가 빠르게 찾아드립니다</h1>
-          <p>상가·사무실·아파트·토지까지. 현장 확인한 매물만, 지역 밀착 전문가가 안내합니다.</p>
+          <h1>딱 맞는 매물,<br /><b>하남 e스타필드</b>가 빠르게 <br className="br-m" />찾아드립니다</h1>
+          <p>아파트, 토지, 상가, 사무실까지. 확인된 매물만, 전문가가 안내합니다.</p>
           <div className="hero-actions">
             <a className="btn btn-gold" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 {company.phone}</a>
             <Link className="btn btn-navy" to="/listings">매물 보러가기</Link>
