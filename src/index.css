@@ -315,6 +315,7 @@ p { text-wrap: pretty; }
 .adm-check { display: flex; align-items: center; gap: 8px; letter-spacing: normal; text-transform: none; font-family: var(--sans); }
 .adm-check input { width: auto; margin: 0; }
 .adm-error { color: #a8341f; font-size: 14px; font-weight: 500; margin: 0 0 16px; }
+.adm-success { color: #2e6b45; font-size: 14px; font-weight: 500; margin: 0 0 16px; }
 
 /* Top bar + tabs */
 .adm-topbar { display: flex; align-items: center; justify-content: space-between; background: var(--ink); color: #fff; padding: 22px 30px; }

@@ -28,7 +28,9 @@ export async function fetchListings() {
       return staticListings.map(withThumbDefault)
     }
 
-    const rows = [...data].sort((x, y) => (x.sortOrder ?? 0) - (y.sortOrder ?? 0))
+    const rows = [...data].sort(
+      (x, y) => (x.sortOrder ?? 0) - (y.sortOrder ?? 0) || new Date(y.createdAt) - new Date(x.createdAt),
+    )
     return Promise.all(
       rows.map(async (row) =>
         withThumbDefault({

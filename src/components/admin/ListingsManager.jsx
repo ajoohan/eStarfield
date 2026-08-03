@@ -29,6 +29,7 @@ export default function ListingsManager() {
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
@@ -48,7 +49,7 @@ export default function ListingsManager() {
       } else {
         const rows = await Promise.all(
           [...(data || [])]
-            .sort((x, y) => (x.sortOrder ?? 0) - (y.sortOrder ?? 0))
+            .sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt))
             .map(async (r) => ({ ...r, thumbUrl: await resolveFileUrl(r.thumb || '') })),
         )
         setListings(rows)
@@ -73,6 +74,7 @@ export default function ListingsManager() {
     setImageFile(null)
     setShowForm(true)
     setError('')
+    setNotice('')
   }
 
   function openEditForm(row) {
@@ -150,6 +152,7 @@ export default function ListingsManager() {
 
       closeForm()
       await loadListings()
+      setNotice(editingId ? '매물이 수정되었습니다.' : '매물이 등록되었습니다. 목록 맨 위에 표시됩니다.')
     } catch (err) {
       setError(err?.message || '저장 중 오류가 발생했습니다.')
     } finally {
@@ -182,6 +185,7 @@ export default function ListingsManager() {
       </div>
 
       {error && <p className="adm-error">{error}</p>}
+      {notice && !error && <p className="adm-success">{notice}</p>}
 
       {showForm && (
         <form className="adm-form" onSubmit={handleSubmit}>
@@ -318,7 +322,8 @@ export default function ListingsManager() {
                 </div>
                 <p className="adm-list-meta">
                   {typeLabel(row.typeKey)} · {dealLabel(row.dealKey)} ·{' '}
-                  {row.price || row.deposit || row.monthly || '-'} · {row.location}
+                  {row.price || row.deposit || row.monthly || '-'} · {row.location} · 등록{' '}
+                  {new Date(row.createdAt).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </p>
                 <div className="adm-list-actions">
                   <button type="button" className="btn btn-ghost-navy" onClick={() => openEditForm(row)}>
