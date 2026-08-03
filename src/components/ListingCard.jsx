@@ -12,7 +12,7 @@ export default function ListingCard({ item, onClick }) {
         <span className="tag">{dealLabel(item.dealKey)}</span>
         <strong>{item.title}</strong>
         <p className="lc-price">{priceLabel(item)}</p>
-        <p className="lc-meta">{item.location} · {item.area} · {item.floor}</p>
+        <p className="lc-meta">{[item.floor, item.area, item.location].filter(Boolean).join(' · ')}</p>
       </div>
     </button>
   )

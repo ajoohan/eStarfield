@@ -3,7 +3,6 @@ import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
 // 권한 요약
 // - 공개(apiKey): 콘텐츠 read / 문의 create / 조회수 증가
 // - 관리자(userPool): 전체 CRUD
-// - [MIGRATION] 표시 권한은 Supabase 데이터 이전용 임시 권한 — 이전 완료 후 제거할 것
 const schema = a.schema({
   Listing: a
     .model({

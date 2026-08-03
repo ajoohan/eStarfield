@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { propertyTypes, company } from '../data.js'
 import { dealLabel, priceLabel } from '../lib/format.js'
+import { PhoneIcon } from './icons.jsx'
 
 export default function ListingModal({ item, onClose }) {
   useEffect(() => {
@@ -27,12 +28,14 @@ export default function ListingModal({ item, onClose }) {
         <h3>{item.title}</h3>
         <p className="modal-price">{priceLabel(item)}</p>
         <ul className="modal-spec">
-          <li><span>위치</span>{item.location}</li>
-          <li><span>면적</span>{item.area}</li>
-          <li><span>층</span>{item.floor}</li>
+          {item.floor && <li><span>동·호수</span>{item.floor}</li>}
+          {item.area && <li><span>면적</span>{item.area}</li>}
+          {item.location && <li><span>위치</span>{item.location}</li>}
         </ul>
-        <p className="modal-desc">{item.desc}</p>
-        <a className="btn btn-gold" href={`tel:${company.phone.replace(/-/g, '')}`}>📞 이 매물 문의 {company.phone}</a>
+        {item.desc && <p className="modal-desc">{item.desc}</p>}
+        <a className="btn btn-gold" href={`tel:${company.phone.replace(/-/g, '')}`}>
+          <PhoneIcon className="btn-ico" /> 이 매물 문의 {company.phone}
+        </a>
       </div>
     </div>
   )

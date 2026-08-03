@@ -179,7 +179,7 @@ export default function ListingsManager() {
   const q = query.trim().toLowerCase()
   const visibleListings = q
     ? listings.filter((r) =>
-        `${r.title || ''} ${r.location || ''}`.toLowerCase().includes(q),
+        `${r.title || ''} ${r.floor || ''} ${r.location || ''}`.toLowerCase().includes(q),
       )
     : listings
 
@@ -247,8 +247,13 @@ export default function ListingsManager() {
               <input type="text" value={form.location} onChange={(e) => updateField('location', e.target.value)} />
             </label>
             <label className="adm-field">
-              층
-              <input type="text" value={form.floor} onChange={(e) => updateField('floor', e.target.value)} />
+              동·호수 / 층
+              <input
+                type="text"
+                value={form.floor}
+                onChange={(e) => updateField('floor', e.target.value)}
+                placeholder="예: 104동 1503호 / 115호 / 3층"
+              />
             </label>
             <label className="adm-field">
               정렬순서
@@ -316,7 +321,7 @@ export default function ListingsManager() {
         <input
           type="search"
           className="adm-search"
-          placeholder="제목·위치로 검색"
+          placeholder="제목·동호수·위치로 검색"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -338,14 +343,30 @@ export default function ListingsManager() {
               <div className="adm-thumb-body">
                 <div className="adm-list-main">
                   <strong>{row.title}</strong>
+                  {row.floor && <span className="adm-unit">{row.floor}</span>}
                   <span className={`adm-badge ${row.isActive ? 'adm-badge-on' : 'adm-badge-off'}`}>
                     {row.isActive ? '공개' : '비공개'}
                   </span>
                 </div>
                 <p className="adm-list-meta">
-                  {typeLabel(row.typeKey)} · {dealLabel(row.dealKey)} ·{' '}
-                  {row.price || row.deposit || row.monthly || '-'} · {row.location} · 등록{' '}
-                  {new Date(row.createdAt).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  {[
+                    typeLabel(row.typeKey),
+                    dealLabel(row.dealKey),
+                    row.price || row.deposit || row.monthly,
+                    row.area,
+                    row.location,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                  <span className="adm-list-when">
+                    등록{' '}
+                    {new Date(row.createdAt).toLocaleString('ko-KR', {
+                      month: 'numeric',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </span>
                 </p>
                 <div className="adm-list-actions">
                   <button type="button" className="btn btn-ghost-navy" onClick={() => openEditForm(row)}>
