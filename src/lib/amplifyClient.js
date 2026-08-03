@@ -15,11 +15,12 @@ if (amplifyReady) {
   console.warn('[amplify] amplify_outputs.json 이 없어 정적 폴백 모드로 동작합니다.')
 }
 
-// 공개 조회/문의 등록용, 관리자 작업용(userPool)
+// 공개 조회/문의 등록용(apiKey), 관리자 작업용(userPool)
 //
-// 공개 경로는 identityPool(= Cognito 자격증명풀의 게스트 역할)을 쓴다.
-// apiKey는 365일마다 만료돼 그날 사이트의 매물이 통째로 사라지는데,
-// 게스트 역할은 만료가 없다. 백엔드에는 apiKey 권한도 함께 열려 있으므로
-// 문제가 생기면 이 한 줄만 'apiKey'로 되돌리면 즉시 복구된다.
-export const publicClient = amplifyReady ? generateClient({ authMode: 'identityPool' }) : null
+// TODO(API 키 만료): apiKey는 365일마다 만료된다(최초 배포 2026-07-19 → 2027년 7월경).
+// 만료되면 공개 사이트의 매물·게시물이 통째로 조회 불가가 된다.
+// identityPool(게스트 역할) 전환을 시도했으나 백엔드 배포가 실패해 되돌렸다.
+// 재시도할 때는 반드시 백엔드에 allow.guest() 가 실제로 적용됐는지 먼저 확인하고
+// (게스트 IAM 서명 요청으로 검증) 그 다음에 이 authMode를 바꿀 것.
+export const publicClient = amplifyReady ? generateClient({ authMode: 'apiKey' }) : null
 export const adminClient = amplifyReady ? generateClient({ authMode: 'userPool' }) : null
