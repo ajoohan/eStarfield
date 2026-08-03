@@ -322,6 +322,9 @@ p { text-wrap: pretty; }
 .adm-list-when { display: block; margin-top: 4px; color: var(--faint); font-size: 12.5px; }
 .adm-search { width: 100%; max-width: 340px; margin: 0 0 18px; padding: 11px 15px; border: 1px solid var(--line); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--sans); color: var(--ink); background: var(--surface); transition: border-color .16s, box-shadow .16s; }
 .adm-search:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(28,28,26,.06); }
+.load-error { text-align: center; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 64px 32px; }
+.load-error strong { font-family: var(--display); display: block; color: var(--ink); font-size: 20px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; }
+.load-error p { color: var(--muted); margin: 0 0 24px; font-size: 15px; line-height: 1.75; }
 .listing-count { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
 .listing-count b { color: var(--ink); font-weight: 700; }
 

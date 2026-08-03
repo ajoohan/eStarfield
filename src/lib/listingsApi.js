@@ -1,6 +1,5 @@
 import { publicClient, amplifyReady } from './amplifyClient.js'
 import { resolveFileUrl } from './storage.js'
-import { listings as staticListings } from '../data.js'
 
 // 대표 이미지가 없는 매물에 적용할 유형별 더미 사진
 const DUMMY_THUMBS = {
@@ -14,24 +13,27 @@ function withThumbDefault(item) {
   return { ...item, thumb: item.thumb || DUMMY_THUMBS[item.typeKey] || '' }
 }
 
+/**
+ * 매물 목록을 가져온다.
+ * 실패하면 빈 목록 + error=true 를 돌려준다.
+ * 실제로 존재하지 않는 예시 매물을 대신 보여주면 고객이 없는 매물로 문의하게 되므로
+ * 폴백 데이터를 쓰지 않는다.
+ * @returns {Promise<{ listings: object[], error: boolean }>}
+ */
 export async function fetchListings() {
-  if (!amplifyReady) return staticListings.map(withThumbDefault)
+  if (!amplifyReady) return { listings: [], error: true }
 
   try {
     const { data, errors } = await publicClient.models.Listing.list({
       filter: { isActive: { eq: true } },
       limit: 500,
     })
-    if (errors?.length || !data || data.length === 0) {
-      // eslint-disable-next-line no-console
-      console.warn('[listingsApi] 매물을 불러오지 못해 정적 데이터로 대체합니다.', errors)
-      return staticListings.map(withThumbDefault)
-    }
+    if (errors?.length) throw new Error(errors[0]?.message || 'list failed')
 
-    const rows = [...data].sort(
+    const rows = [...(data || [])].sort(
       (x, y) => (x.sortOrder ?? 0) - (y.sortOrder ?? 0) || new Date(y.createdAt) - new Date(x.createdAt),
     )
-    return Promise.all(
+    const listings = await Promise.all(
       rows.map(async (row) =>
         withThumbDefault({
           id: row.id,
@@ -49,9 +51,10 @@ export async function fetchListings() {
         }),
       ),
     )
+    return { listings, error: false }
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn('[listingsApi] 매물 조회 중 오류 — 정적 데이터로 대체합니다.', err)
-    return staticListings.map(withThumbDefault)
+    console.warn('[listingsApi] 매물 조회 실패 — 빈 목록으로 처리합니다.', err)
+    return { listings: [], error: true }
   }
 }

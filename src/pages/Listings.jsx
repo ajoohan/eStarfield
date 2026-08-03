@@ -5,6 +5,7 @@ import SectionTitle from '../components/SectionTitle.jsx'
 import ListingFilter from '../components/ListingFilter.jsx'
 import ListingCard from '../components/ListingCard.jsx'
 import ListingModal from '../components/ListingModal.jsx'
+import LoadErrorBox from '../components/LoadErrorBox.jsx'
 
 const PAGE_SIZE = 12
 
@@ -15,6 +16,7 @@ export default function Listings() {
   const [selected, setSelected] = useState(null)
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [visible, setVisible] = useState(PAGE_SIZE)
 
   useEffect(() => {
@@ -29,9 +31,10 @@ export default function Listings() {
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    fetchListings().then((data) => {
+    fetchListings().then(({ listings, error }) => {
       if (cancelled) return
-      setItems(data)
+      setItems(listings)
+      setLoadError(error)
       setLoading(false)
     })
     return () => {
@@ -50,6 +53,8 @@ export default function Listings() {
       <ListingFilter type={type} deal={deal} onType={setType} onDeal={setDeal} />
       {loading ? (
         <p className="empty">매물을 불러오는 중입니다…</p>
+      ) : loadError ? (
+        <LoadErrorBox />
       ) : filtered.length === 0 ? (
         <p className="empty">해당 조건의 매물이 없습니다. 전화로 문의 주시면 맞는 매물을 찾아드립니다.</p>
       ) : (

@@ -14,9 +14,9 @@ export default function Home() {
 
   useEffect(() => {
     let cancelled = false
-    fetchListings().then((data) => {
+    fetchListings().then(({ listings }) => {
       if (cancelled) return
-      setItems(data)
+      setItems(listings)
     })
     return () => {
       cancelled = true

@@ -1,7 +1,10 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
 
 // 권한 요약
-// - 공개(apiKey): 콘텐츠 read / 문의 create / 조회수 증가
+// - 공개(guest = Cognito 자격증명풀 비인증 역할): 콘텐츠 read / 문의 create / 조회수 증가
+//   → 프런트엔드 publicClient가 쓰는 경로. API 키와 달리 만료가 없다.
+// - 공개(apiKey): guest와 동일 범위. 만료(365일)가 있어 주 경로로는 쓰지 않지만,
+//   외부 도구·비상용으로 남겨 둔다. 제거하려면 프런트가 identityPool을 쓰는지 먼저 확인할 것.
 // - 관리자(userPool): 전체 CRUD
 const schema = a.schema({
   Listing: a
@@ -21,6 +24,7 @@ const schema = a.schema({
       sortOrder: a.integer().default(0),
     })
     .authorization((allow) => [
+      allow.guest().to(['read']),
       allow.publicApiKey().to(['read']),
       allow.authenticated(),
     ]),
@@ -45,6 +49,7 @@ const schema = a.schema({
       isActive: a.boolean().default(true),
     })
     .authorization((allow) => [
+      allow.guest().to(['read']),
       allow.publicApiKey().to(['read']),
       allow.authenticated(),
     ]),
@@ -60,6 +65,7 @@ const schema = a.schema({
       isActive: a.boolean().default(true),
     })
     .authorization((allow) => [
+      allow.guest().to(['read']),
       allow.publicApiKey().to(['read']),
       allow.authenticated(),
     ]),
@@ -76,6 +82,7 @@ const schema = a.schema({
       repliedAt: a.datetime(),
     })
     .authorization((allow) => [
+      allow.guest().to(['create']),
       allow.publicApiKey().to(['create']),
       allow.authenticated(),
     ]),
@@ -85,7 +92,7 @@ const schema = a.schema({
     .mutation()
     .arguments({ id: a.id().required() })
     .returns(a.ref('Post'))
-    .authorization((allow) => [allow.publicApiKey(), allow.authenticated()])
+    .authorization((allow) => [allow.guest(), allow.publicApiKey(), allow.authenticated()])
     .handler(
       a.handler.custom({
         dataSource: a.ref('Post'),

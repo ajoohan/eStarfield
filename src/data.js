@@ -42,16 +42,8 @@ export const dealTypes = [
   { key: 'monthly', label: '월세' },
 ]
 
-export const listings = [
-  { id: 1, title: '미사역 초역세권 1층 코너 상가', typeKey: 'store', dealKey: 'monthly', area: '49.5㎡(15평)', price: '', deposit: '5,000만원', monthly: '350만원', location: '하남시 미사강변대로', floor: '1층', desc: '유동인구 풍부한 코너 자리, 다양한 업종 가능. 권리금 협의.', thumb: '' },
-  { id: 2, title: '에일린의뜰 단지내 상가', typeKey: 'store', dealKey: 'sale', area: '33.0㎡(10평)', price: '4억 2,000만원', deposit: '', monthly: '', location: '하남유니온로', floor: '1층', desc: '배후세대 탄탄한 단지내 상가. 안정적 임대수익.', thumb: '' },
-  { id: 3, title: '유니온시티 지식산업센터 사무실', typeKey: 'office', dealKey: 'monthly', area: '82.6㎡(25평)', price: '', deposit: '2,000만원', monthly: '150만원', location: '하남시 유니온로', floor: '7층', desc: '신축 지산, 주차 편리, 즉시 입주 가능.', thumb: '' },
-  { id: 4, title: '미사강변도시 오피스텔(업무용)', typeKey: 'office', dealKey: 'jeonse', area: '39.6㎡(12평)', price: '', deposit: '1억 5,000만원', monthly: '', location: '하남시 미사강변동로', floor: '12층', desc: '역세권 오피스텔, 재택·1인 사무실 적합.', thumb: '' },
-  { id: 5, title: '미사강변 브라이튼 아파트 84㎡', typeKey: 'home', dealKey: 'sale', area: '84.9㎡(34평)', price: '9억 8,000만원', deposit: '', monthly: '', location: '하남시 미사강변한강로', floor: '15층', desc: '한강 조망, 학군·교통 우수. 남향 로열층.', thumb: '' },
-  { id: 6, title: '풍산동 신축 빌라 전세', typeKey: 'home', dealKey: 'jeonse', area: '59.5㎡(18평)', price: '', deposit: '3억 2,000만원', monthly: '', location: '하남시 풍산동', floor: '3층', desc: '신축 풀옵션, 즉시 입주. 주차 가능.', thumb: '' },
-  { id: 7, title: '하남 감일지구 근린생활용지', typeKey: 'land', dealKey: 'sale', area: '330㎡(100평)', price: '12억원', deposit: '', monthly: '', location: '하남시 감일동', floor: '-', desc: '상업지역 인접 근생용지, 개발 가치 우수.', thumb: '' },
-  { id: 8, title: '미사동 상가건물 통매매', typeKey: 'land', dealKey: 'sale', area: '660㎡(200평)', price: '38억원', deposit: '', monthly: '', location: '하남시 미사동', floor: '지하1~지상4층', desc: '수익형 상가건물, 임대수익률 4%대. 투자문의 환영.', thumb: '' },
-]
+// 데모 매물 데이터는 제거함 — 매물은 항상 DB에서만 가져온다.
+// (조회 실패 시 예시 매물을 보여주면 존재하지 않는 매물로 문의가 들어오므로)
 
 export const steps = [
   { no: 1, title: '매물 확인·상담', desc: '원하는 조건(지역·예산·용도)을 알려주시면 맞는 매물을 정리해 안내합니다.' },
