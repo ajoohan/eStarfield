@@ -6,6 +6,8 @@ import ListingFilter from '../components/ListingFilter.jsx'
 import ListingCard from '../components/ListingCard.jsx'
 import ListingModal from '../components/ListingModal.jsx'
 
+const PAGE_SIZE = 12
+
 export default function Listings() {
   const [params] = useSearchParams()
   const [type, setType] = useState('all')
@@ -13,11 +15,16 @@ export default function Listings() {
   const [selected, setSelected] = useState(null)
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
+  const [visible, setVisible] = useState(PAGE_SIZE)
 
   useEffect(() => {
     const t = params.get('type')
     if (t) setType(t)
   }, [params])
+
+  useEffect(() => {
+    setVisible(PAGE_SIZE)
+  }, [type, deal])
 
   useEffect(() => {
     let cancelled = false
@@ -35,6 +42,7 @@ export default function Listings() {
   const filtered = items.filter(
     (l) => (type === 'all' || l.typeKey === type) && (deal === 'all' || l.dealKey === deal),
   )
+  const shown = filtered.slice(0, visible)
 
   return (
     <div className="page">
@@ -45,9 +53,25 @@ export default function Listings() {
       ) : filtered.length === 0 ? (
         <p className="empty">해당 조건의 매물이 없습니다. 전화로 문의 주시면 맞는 매물을 찾아드립니다.</p>
       ) : (
-        <div className="listing-grid">
-          {filtered.map((l) => <ListingCard key={l.id} item={l} onClick={setSelected} />)}
-        </div>
+        <>
+          <p className="listing-count">
+            전체 <b>{filtered.length}</b>건
+          </p>
+          <div className="listing-grid">
+            {shown.map((l) => <ListingCard key={l.id} item={l} onClick={setSelected} />)}
+          </div>
+          {filtered.length > visible && (
+            <div className="center-mt">
+              <button
+                type="button"
+                className="btn btn-navy"
+                onClick={() => setVisible((v) => v + PAGE_SIZE)}
+              >
+                매물 더보기 ({filtered.length - visible}건)
+              </button>
+            </div>
+          )}
+        </>
       )}
       <ListingModal item={selected} onClose={() => setSelected(null)} />
     </div>

@@ -30,6 +30,7 @@ export default function ListingsManager() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [query, setQuery] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
@@ -175,10 +176,19 @@ export default function ListingsManager() {
     }
   }
 
+  const q = query.trim().toLowerCase()
+  const visibleListings = q
+    ? listings.filter((r) =>
+        `${r.title || ''} ${r.location || ''}`.toLowerCase().includes(q),
+      )
+    : listings
+
   return (
     <div className="adm-panel">
       <div className="adm-panel-head">
-        <h2>매물 관리</h2>
+        <h2>
+          매물 관리 <span className="adm-count">총 {listings.length}건</span>
+        </h2>
         <button type="button" className="btn btn-navy" onClick={openNewForm}>
           + 매물 추가
         </button>
@@ -302,13 +312,25 @@ export default function ListingsManager() {
         </form>
       )}
 
+      {!loading && listings.length > 3 && (
+        <input
+          type="search"
+          className="adm-search"
+          placeholder="제목·위치로 검색"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      )}
+
       {loading ? (
         <p className="adm-loading">불러오는 중…</p>
       ) : listings.length === 0 ? (
         <p className="adm-empty">등록된 매물이 없습니다.</p>
+      ) : visibleListings.length === 0 ? (
+        <p className="adm-empty">검색 결과가 없습니다.</p>
       ) : (
         <ul className="adm-list">
-          {listings.map((row) => (
+          {visibleListings.map((row) => (
             <li key={row.id} className="adm-list-item adm-thumb-item">
               <div className="adm-thumb">
                 {row.thumbUrl ? <img src={row.thumbUrl} alt="" /> : <span>NO IMAGE</span>}
