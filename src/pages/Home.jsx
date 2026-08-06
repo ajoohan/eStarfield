@@ -64,7 +64,7 @@ export default function Home() {
                 <div className="feat-body">
                   <span className="tag">{dealLabel(l.dealKey)}</span>
                   <strong>{l.title}</strong>
-                  <p>{l.location} · {l.area}</p>
+                  <p>{[l.floor, l.area, l.location].filter(Boolean).join(' · ')}</p>
                 </div>
               </div>
             ))}
