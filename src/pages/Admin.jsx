@@ -7,8 +7,9 @@ import ListingsManager from '../components/admin/ListingsManager.jsx'
 import InquiriesManager from '../components/admin/InquiriesManager.jsx'
 import PostsManager from '../components/admin/PostsManager.jsx'
 import ComplexesManager from '../components/admin/ComplexesManager.jsx'
+import AdminNotices from '../components/admin/AdminNotices.jsx'
 
-const ADMIN_VERSION = 'Version 1.3'
+const ADMIN_VERSION = 'Version 1.4'
 const ADMIN_VERSION_DATE = '2026.08.03'
 
 const ADMIN_MENU = [
@@ -144,6 +145,7 @@ export default function Admin() {
       </aside>
 
       <main className="adm-main">
+        <AdminNotices onGo={setTab} />
         {tab === 'complexes' && <ComplexesManager />}
         {tab === 'listings' && <ListingsManager />}
         {tab === 'process' && <PostsManager key="process" board="process" />}
